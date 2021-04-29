@@ -41,7 +41,7 @@ class ListCard extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: 0, right: 0, bottom: 0, left: 0),
             child: Text(
-              'Coffee $_name',
+              '$_name',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.black,

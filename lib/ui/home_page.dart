@@ -1,6 +1,8 @@
+import 'package:coffee_project/ui/account_page.dart';
 import 'package:coffee_project/ui/add_card_page.dart';
 import 'package:coffee_project/ui/list_card_page.dart';
 import 'package:coffee_project/view_model/home_model.dart';
+import 'package:coffee_project/view_model/login_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +47,32 @@ class HomePage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: Text('Coffee'),
-            actions: [],
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.person,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AccountPage(),
+                      fullscreenDialog: true,
+                    ),
+                  );
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.logout,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  _logout(context);
+                },
+              ),
+            ],
           ),
           body: _pageWidgets.elementAt(_bottomIndex),
           floatingActionButton: _floatingActionButtons.elementAt(_bottomIndex),
@@ -71,6 +98,10 @@ class HomePage extends StatelessWidget {
         );
       }),
     );
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    await context.read<LoginModel>().logout();
   }
 }
 
