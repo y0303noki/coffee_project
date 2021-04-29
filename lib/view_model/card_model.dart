@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coffee_project/model/coffee.dart';
 import 'package:coffee_project/model/coffee_card.dart';
+import 'package:coffee_project/view_model/login_model.dart';
 import 'package:flutter/material.dart';
 
 class CardModel extends ChangeNotifier {
@@ -12,9 +13,14 @@ class CardModel extends ChangeNotifier {
   // }
   Stream<QuerySnapshot> findCardList() {
     // userIdは必ず指定する！
+    String userId = 'TEST';
+    print(LoginModel().user);
+    if (LoginModel().user != null) {
+      userId = LoginModel().user.uid;
+    }
     var coffeeCardList = FirebaseFirestore.instance
         .collection('coffee_cards')
-        .where('userId', isEqualTo: 100)
+        .where('userId', isEqualTo: userId)
         // .orderBy('updatedAt', descending: true)
         .snapshots();
     return coffeeCardList;
@@ -23,10 +29,12 @@ class CardModel extends ChangeNotifier {
   Future<void> addCard(CoffeeCard addCoffeeCard) async {
     // ドキュメント作成
     Map<String, dynamic> addObject = new Map<String, dynamic>();
-    addObject['userId'] = 100;
+    String userId = LoginModel().user.uid;
+    addObject['userId'] = userId;
     addObject['name'] = addCoffeeCard.name;
     addObject['score'] = addCoffeeCard.score;
     addObject['memo'] = addCoffeeCard.memo;
+    addObject['isPublic'] = false;
     addObject['coffeeAt'] = addCoffeeCard.createdAt; // 作成日時と同じにしておく
     addObject['createdAt'] = addCoffeeCard.createdAt;
     addObject['updatedAt'] = addCoffeeCard.updatedAt;
