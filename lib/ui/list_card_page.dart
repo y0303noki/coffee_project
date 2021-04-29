@@ -57,13 +57,11 @@ class ListCardPage extends StatelessWidget {
           test.name,
           test.coffeeAt,
           test.memo,
+          test.isPublic,
+          test.score,
           'The best beach in Torrance',
           'torrance-beach.jpg',
         ),
-        // child: ListTile(
-        //   title: Text(test.name), trailing: Text(test.score.toString()),
-        //   onTap: () => {},
-        //   // record.reference.updateData({'votes': FieldValue.increment(1)}),
       ),
     );
   }

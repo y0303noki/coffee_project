@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
             ),
           );
         },
-        child: const Icon(Icons.navigation),
+        child: const Icon(Icons.add),
         backgroundColor: Colors.green,
       ),
       FloatingActionButton(

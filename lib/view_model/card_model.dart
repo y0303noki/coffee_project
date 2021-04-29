@@ -34,7 +34,7 @@ class CardModel extends ChangeNotifier {
     addObject['name'] = addCoffeeCard.name;
     addObject['score'] = addCoffeeCard.score;
     addObject['memo'] = addCoffeeCard.memo;
-    addObject['isPublic'] = false;
+    addObject['isPublic'] = addCoffeeCard.isPublic;
     addObject['coffeeAt'] = addCoffeeCard.createdAt; // 作成日時と同じにしておく
     addObject['createdAt'] = addCoffeeCard.createdAt;
     addObject['updatedAt'] = addCoffeeCard.updatedAt;
