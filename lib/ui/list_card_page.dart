@@ -12,18 +12,7 @@ class ListCardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<ListCard> _cardList = [];
-    // for (int i = 0; i < 10; i++) {
-    //   _cardList.add(
-    //     ListCard(
-    //       'Coffee $i',
-    //       'The best beach in Torrance',
-    //       'torrance-beach.jpg',
-    //     ),
-    //   );
-    // }
-    //
 
-    // return ListView(children: _cardList);
     return _buildBody(context);
   }
 
@@ -54,14 +43,15 @@ class ListCardPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
         child: ListCard(
-          test.name,
-          test.coffeeAt,
-          test.memo,
-          test.isPublic,
-          test.score,
-          'The best beach in Torrance',
-          'torrance-beach.jpg',
-        ),
+            test.name,
+            test.coffeeAt,
+            test.memo,
+            test.isPublic,
+            test.score,
+            'The best beach in Torrance',
+            null,
+            test.imageUrl,
+            false),
       ),
     );
   }

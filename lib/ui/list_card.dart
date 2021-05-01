@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:coffee_project/utils/date_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:share/share.dart';
 
 class ListCard extends StatelessWidget {
   final String _name;
@@ -9,13 +12,27 @@ class ListCard extends StatelessWidget {
   final bool _isPublic;
   final int _score;
   final String _desc;
-  final String _picture;
+  // 端末内の画像のアドレス
+  final File _imageFile;
+  // アップロード済みの画像のアドレス
+  final String _imageUrl;
+  // True:追加画面 False:リスト画面
+  final bool _isAddCard;
 
-  ListCard(this._name, this._coffeeDate, this._memo, this._isPublic,
-      this._score, this._desc, this._picture);
+  ListCard(
+      this._name,
+      this._coffeeDate,
+      this._memo,
+      this._isPublic,
+      this._score,
+      this._desc,
+      this._imageFile,
+      this._imageUrl,
+      this._isAddCard);
 
   @override
   Widget build(BuildContext context) {
+    print('List Card: $_imageFile');
     String coffeeDateStr = DateUtility(_coffeeDate).toDateFormatted();
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -36,28 +53,32 @@ class ListCard extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.red,
-                      fontSize: 30,
+                      fontSize: 20,
                     ),
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    EdgeInsets.only(top: 10, right: 20, bottom: 0, left: 0),
-                child: Chip(
-                  avatar: CircleAvatar(
-                    backgroundColor: _isPublic != null && _isPublic
-                        ? Colors.orange
-                        : Colors.blue,
-                  ),
-                  label: Text(
-                      _isPublic != null && _isPublic ? 'Public' : 'Private'),
-                ),
-              )
+              // TODO:公開設定、一旦表示しない
+              // Padding(
+              //   padding:
+              //       EdgeInsets.only(top: 10, right: 20, bottom: 0, left: 0),
+              //   child: Chip(
+              //     avatar: CircleAvatar(
+              //       backgroundColor: _isPublic != null && _isPublic
+              //           ? Colors.orange
+              //           : Colors.blue,
+              //     ),
+              //     label: Text(
+              //         _isPublic != null && _isPublic ? 'Public' : 'Private'),
+              //   ),
+              // ),
             ],
           ),
+          // Image.file(_imageFile),
           Container(
-            child: Image.asset('asset/images/coffeeSample.png'),
+            width: 200.0,
+            height: 200.0,
+            child: switchImage(),
           ),
           Padding(
             padding: EdgeInsets.only(top: 0, right: 0, bottom: 0, left: 0),
@@ -98,18 +119,41 @@ class ListCard extends StatelessWidget {
           ButtonBar(
             alignment: MainAxisAlignment.start,
             children: [
-              TextButton(
-                child: Text('Buy Cat'),
-                onPressed: () {},
+              // SNSで共有ボタン
+              IconButton(
+                onPressed: () async {
+                  await Share.share("ここに共有したい文字列");
+                },
+                color: Colors.blue,
+                icon: Icon(Icons.share),
               ),
-              TextButton(
-                child: Text('Buy Cat Food'),
-                onPressed: () {},
-              )
+              IconButton(
+                onPressed: () async {},
+                color: Colors.blue,
+                icon: Icon(Icons.edit),
+              ),
             ],
           )
         ],
       ),
     );
+  }
+
+  // 画像を表示するところ
+  // addCardとlistCardで表示する方法が違う
+  Widget switchImage() {
+    if (_isAddCard) {
+      if (_imageFile != null) {
+        return Image.file(_imageFile);
+      } else {
+        return Image.asset('asset/images/coffeeSample.png');
+      }
+    } else {
+      if (_imageUrl != null) {
+        return Image.network(_imageUrl);
+      } else {
+        return Image.asset('asset/images/coffeeSample.png');
+      }
+    }
   }
 }

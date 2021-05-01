@@ -1,24 +1,25 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coffee_project/model/coffee.dart';
 import 'package:coffee_project/model/coffee_card.dart';
 import 'package:coffee_project/view_model/login_model.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CardModel extends ChangeNotifier {
   int bottomIndex = 0;
+  File imageFile;
+  bool isLoading = false;
 
-  // Stream<QuerySnapshot> findCardList() {
-  //   var a = FirebaseFirestore.instance.collection('test').snapshots();
-  //   return a;
-  // }
   Stream<QuerySnapshot> findCardList() {
     // userIdは必ず指定する！
     String userId = 'TEST';
-    print(LoginModel().user);
     if (LoginModel().user != null) {
       userId = LoginModel().user.uid;
     }
-    var coffeeCardList = FirebaseFirestore.instance
+    final coffeeCardList = FirebaseFirestore.instance
         .collection('coffee_cards')
         .where('userId', isEqualTo: userId)
         // .orderBy('updatedAt', descending: true)
@@ -27,14 +28,17 @@ class CardModel extends ChangeNotifier {
   }
 
   Future<void> addCard(CoffeeCard addCoffeeCard) async {
+    isLoading = true;
     // ドキュメント作成
     Map<String, dynamic> addObject = new Map<String, dynamic>();
     String userId = LoginModel().user.uid;
+    String imageUrl = await uploadImageUrl(addCoffeeCard);
     addObject['userId'] = userId;
     addObject['name'] = addCoffeeCard.name;
     addObject['score'] = addCoffeeCard.score;
     addObject['memo'] = addCoffeeCard.memo;
     addObject['isPublic'] = addCoffeeCard.isPublic;
+    addObject['imageUrl'] = imageUrl;
     addObject['coffeeAt'] = addCoffeeCard.createdAt; // 作成日時と同じにしておく
     addObject['createdAt'] = addCoffeeCard.createdAt;
     addObject['updatedAt'] = addCoffeeCard.updatedAt;
@@ -45,8 +49,36 @@ class CardModel extends ChangeNotifier {
         .collection('coffee_cards')
         .add(addObject);
 
-    var userDoc = await result.get();
-    print(userDoc.data());
+    isLoading = false;
+
+    // var userDoc = await result.get();
+  }
+
+  Future showImagePicker() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    if (pickedFile == null) {
+      print('pickedfile is null');
+      return;
+    }
+    imageFile = File(pickedFile.path);
+    notifyListeners();
+  }
+
+  // storageへアップロード
+  Future<String> uploadImageUrl(CoffeeCard addCoffeeCard) async {
+    if (imageFile == null) {
+      return null;
+    }
+    final storage = FirebaseStorage.instance;
+    TaskSnapshot snapshot = await storage
+        .ref()
+        .child("coffeeImages/${addCoffeeCard.name}")
+        .putFile(imageFile);
+
+    final downloadUrl = snapshot.ref.getDownloadURL();
+
+    return downloadUrl;
   }
 
   void refresh() {

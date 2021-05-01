@@ -6,6 +6,7 @@ class Coffee {
   DateTime coffeeAt;
   String memo;
   bool isPublic;
+  String imageUrl;
   final DocumentReference reference;
 
   // void setName(String name) {
@@ -31,7 +32,8 @@ class Coffee {
         score = map['score'],
         coffeeAt = map['coffeeAt'].toDate(),
         memo = map['memo'],
-        isPublic = map['isPublic'];
+        isPublic = map['isPublic'],
+        imageUrl = map['imageUrl'];
 
   Coffee.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data(), reference: snapshot.reference);
