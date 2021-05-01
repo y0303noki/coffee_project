@@ -22,12 +22,12 @@ class CardModel extends ChangeNotifier {
     final coffeeCardList = FirebaseFirestore.instance
         .collection('coffee_cards')
         .where('userId', isEqualTo: userId)
-        // .orderBy('updatedAt', descending: true)
+        .orderBy('updatedAt', descending: true)
         .snapshots();
     return coffeeCardList;
   }
 
-  Future<void> addCard(CoffeeCard addCoffeeCard) async {
+  Future<String> addCard(CoffeeCard addCoffeeCard) async {
     isLoading = true;
     // ドキュメント作成
     Map<String, dynamic> addObject = new Map<String, dynamic>();
@@ -45,11 +45,16 @@ class CardModel extends ChangeNotifier {
     addObject['isDeleted'] = false;
     addObject['deletedAt'] = null;
 
-    var result = await FirebaseFirestore.instance
-        .collection('coffee_cards')
-        .add(addObject);
-
-    isLoading = false;
+    try {
+      final result = await FirebaseFirestore.instance
+          .collection('coffee_cards')
+          .add(addObject);
+      isLoading = false;
+      return 'ok';
+    } catch (e) {
+      isLoading = false;
+      return 'error';
+    }
 
     // var userDoc = await result.get();
   }

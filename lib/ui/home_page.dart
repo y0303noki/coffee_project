@@ -27,7 +27,12 @@ class HomePage extends StatelessWidget {
               builder: (context) => AddCardPage(),
               fullscreenDialog: true,
             ),
-          );
+          ).then((value) {
+            if (value is SnackBar) {
+              // 保存が完了したら画面下部に完了メッセージを出す
+              ScaffoldMessenger.of(context).showSnackBar(value);
+            }
+          });
         },
         child: const Icon(Icons.add),
         backgroundColor: Colors.green,

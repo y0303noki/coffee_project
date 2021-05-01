@@ -127,7 +127,7 @@ class AddCardPage extends StatelessWidget {
                       ),
                       TextButton(
                         child: Text('投稿する'),
-                        onPressed: () {
+                        onPressed: () async {
                           _name = _name == '' ? 'nullでした' : _name;
                           DateTime now = DateTime.now();
                           CoffeeCard addCard = new CoffeeCard(
@@ -138,7 +138,15 @@ class AddCardPage extends StatelessWidget {
                               imageUrl: _imageUrl,
                               updatedAt: now,
                               createdAt: now);
-                          model.addCard(addCard);
+                          final String addCardResult =
+                              await model.addCard(addCard);
+                          print(addCardResult);
+                          final SnackBar snackBar = SnackBar(
+                            content: Text('投稿が完了しました！'),
+                          );
+
+                          // 画面戻る
+                          Navigator.of(context).pop(snackBar);
                         },
                       ),
                     ],
