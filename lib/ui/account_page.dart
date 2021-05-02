@@ -19,18 +19,36 @@ class AccountPage extends StatelessWidget {
     final User _user = context.select((LoginModel _auth) => _auth.user);
 
     // ログアウト直後に _user を null にしており、_user.photoURLでエラーが出るため分岐させている
-    return _user != null
-        ? Card(
-            child: ListTile(
-              // leading: CircleAvatar(
-              //   backgroundImage: NetworkImage(_user.photoURL ?? ''),
-              // ),
-              // title: Text(_user.displayName),
-              // subtitle: Text(_user.email),
-              title: Text(_user.uid),
-              subtitle: Text('email'),
-            ),
-          )
-        : Container();
+    return Column(children: [
+      _user != null
+          ? Card(
+              child: ListTile(
+                // leading: CircleAvatar(
+                //   backgroundImage: NetworkImage(_user.photoURL ?? ''),
+                // ),
+                // title: Text(_user.displayName),
+                // subtitle: Text(_user.email),
+                title: Text(_user.uid),
+                subtitle: Text('email'),
+              ),
+            )
+          : Container(),
+      _user != null
+          ? Card(
+              child: ListTile(
+                trailing: Icon(Icons.arrow_forward_ios),
+                title: Text('ログアウト'),
+                onTap: () {
+                  _logout(context);
+                },
+              ),
+            )
+          : Container(),
+    ]);
+  }
+
+  // ログアウトする
+  Future<void> _logout(BuildContext context) async {
+    await context.read<LoginModel>().logout();
   }
 }

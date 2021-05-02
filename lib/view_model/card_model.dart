@@ -13,6 +13,16 @@ class CardModel extends ChangeNotifier {
   File imageFile;
   bool isLoading = false;
 
+  startLoading() {
+    isLoading = true;
+    notifyListeners();
+  }
+
+  endLoading() {
+    isLoading = false;
+    notifyListeners();
+  }
+
   Stream<QuerySnapshot> findCardList() {
     // userIdは必ず指定する！
     String userId = 'TEST';
@@ -28,7 +38,7 @@ class CardModel extends ChangeNotifier {
   }
 
   Future<String> addCard(CoffeeCard addCoffeeCard) async {
-    isLoading = true;
+    // isLoading = true;
     // ドキュメント作成
     Map<String, dynamic> addObject = new Map<String, dynamic>();
     String userId = LoginModel().user.uid;
@@ -49,7 +59,7 @@ class CardModel extends ChangeNotifier {
       final result = await FirebaseFirestore.instance
           .collection('coffee_cards')
           .add(addObject);
-      isLoading = false;
+      // isLoading = false;
       return 'ok';
     } catch (e) {
       isLoading = false;

@@ -1,6 +1,7 @@
 import 'package:coffee_project/ui/account_page.dart';
-import 'package:coffee_project/ui/add_card_page.dart';
+import 'package:coffee_project/ui/add_or_edit_card_page.dart';
 import 'package:coffee_project/ui/list_card_page.dart';
+import 'package:coffee_project/ui/setting_page.dart';
 import 'package:coffee_project/view_model/home_model.dart';
 import 'package:coffee_project/view_model/login_model.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class HomePage extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AddCardPage(),
+              builder: (context) => AddOrEditCardPage(null),
               fullscreenDialog: true,
             ),
           ).then((value) {
@@ -55,26 +56,17 @@ class HomePage extends StatelessWidget {
             actions: [
               IconButton(
                 icon: Icon(
-                  Icons.person,
+                  Icons.settings,
                   color: Colors.white,
                 ),
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AccountPage(),
+                      builder: (context) => SettingPage(),
                       fullscreenDialog: true,
                     ),
                   );
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.logout,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  _logout(context);
                 },
               ),
             ],

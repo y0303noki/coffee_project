@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:coffee_project/ui/add_or_edit_card_page.dart';
 import 'package:coffee_project/utils/date_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -19,6 +20,14 @@ class ListCard extends StatelessWidget {
   // True:追加画面 False:リスト画面
   final bool _isAddCard;
 
+  // getter
+  String get name => _name;
+  DateTime get coffeeDate => _coffeeDate;
+  String get memo => _memo;
+  bool get isPublic => _isPublic;
+  int get score => _score;
+  String get imageUrl => _imageUrl;
+
   ListCard(
       this._name,
       this._coffeeDate,
@@ -32,7 +41,9 @@ class ListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('List Card: $_imageFile');
+    ListCard tempCard = new ListCard(_name, _coffeeDate, _memo, _isPublic,
+        _score, _desc, _imageFile, _imageUrl, _isAddCard);
+
     String coffeeDateStr = DateUtility(_coffeeDate).toDateFormatted();
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -116,24 +127,7 @@ class ListCard extends StatelessWidget {
               ],
             ),
           ),
-          ButtonBar(
-            alignment: MainAxisAlignment.start,
-            children: [
-              // SNSで共有ボタン
-              IconButton(
-                onPressed: () async {
-                  await Share.share("ここに共有したい文字列");
-                },
-                color: Colors.blue,
-                icon: Icon(Icons.share),
-              ),
-              IconButton(
-                onPressed: () async {},
-                color: Colors.blue,
-                icon: Icon(Icons.edit),
-              ),
-            ],
-          )
+          switchButtonBar(context, tempCard),
         ],
       ),
     );
@@ -154,6 +148,46 @@ class ListCard extends StatelessWidget {
       } else {
         return Image.asset('asset/images/coffeeSample.png');
       }
+    }
+  }
+
+  // 共有ボタンと編集ボタン
+  Widget switchButtonBar(BuildContext context, ListCard listCard) {
+    if (_isAddCard) {
+      return ButtonBar();
+    } else {
+      return ButtonBar(
+        alignment: MainAxisAlignment.start,
+        children: [
+          // SNSで共有ボタン
+          IconButton(
+            onPressed: () async {
+              await Share.share("ここに共有したい文字列");
+            },
+            color: Colors.blue,
+            icon: Icon(Icons.share),
+          ),
+          // 編集ボタン
+          IconButton(
+            onPressed: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddOrEditCardPage(listCard),
+                  fullscreenDialog: true,
+                ),
+              ).then((value) {
+                if (value is SnackBar) {
+                  // 保存が完了したら画面下部に完了メッセージを出す
+                  ScaffoldMessenger.of(context).showSnackBar(value);
+                }
+              });
+            },
+            color: Colors.blue,
+            icon: Icon(Icons.edit),
+          ),
+        ],
+      );
     }
   }
 }

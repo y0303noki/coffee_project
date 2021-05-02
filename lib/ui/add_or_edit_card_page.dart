@@ -8,10 +8,19 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 
-class AddCardPage extends StatelessWidget {
+import 'package:share/share.dart';
+
+class AddOrEditCardPage extends StatelessWidget {
+  AddOrEditCardPage(
+    this.editCard,
+  );
   final myController = TextEditingController();
   // 指定した日付
   DateTime postDate = DateTime.now();
+  // 編集or追加
+  ListCard editCard;
+  bool isEdit;
+
   // 名前
   String _name = '';
   // メモ
@@ -26,6 +35,15 @@ class AddCardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    isEdit = editCard != null;
+    if (isEdit) {
+      print(editCard);
+      _name = editCard.name;
+      memo = editCard.memo;
+      _isPublic = editCard.isPublic;
+      _score = editCard.score;
+      _imageUrl = editCard.imageUrl;
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('投稿'),
@@ -55,6 +73,7 @@ class AddCardPage extends StatelessWidget {
                         child: Column(
                           children: [
                             TextField(
+                              controller: TextEditingController(text: _name),
                               decoration: InputDecoration(
                                 labelText: '名前',
                                 hintText: '何飲んだ？',
@@ -66,6 +85,7 @@ class AddCardPage extends StatelessWidget {
                               },
                             ),
                             TextField(
+                              controller: TextEditingController(text: memo),
                               decoration: InputDecoration(
                                 labelText: 'ひとこと',
                                 hintText: 'メモ？',
@@ -79,8 +99,9 @@ class AddCardPage extends StatelessWidget {
                             // スコア
                             Text('スコア'),
                             RatingBar.builder(
-                              initialRating: 3,
+                              initialRating: _score.toDouble(),
                               minRating: 1,
+                              itemSize: 30,
                               direction: Axis.horizontal,
                               allowHalfRating: false,
                               itemCount: 5,
@@ -126,8 +147,17 @@ class AddCardPage extends StatelessWidget {
                         },
                       ),
                       TextButton(
+                        child: Text('テスト用'),
+                        onPressed: () {
+                          _showSuccsessDialog(context);
+                        },
+                      ),
+                      TextButton(
                         child: Text('投稿する'),
                         onPressed: () async {
+                          // ローディング開始
+                          model.startLoading();
+
                           _name = _name == '' ? 'nullでした' : _name;
                           DateTime now = DateTime.now();
                           CoffeeCard addCard = new CoffeeCard(
@@ -141,6 +171,9 @@ class AddCardPage extends StatelessWidget {
                           final String addCardResult =
                               await model.addCard(addCard);
                           print(addCardResult);
+                          // ローディング終了
+                          model.endLoading();
+
                           final SnackBar snackBar = SnackBar(
                             content: Text('投稿が完了しました！'),
                           );
@@ -170,5 +203,38 @@ class AddCardPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future _showSuccsessDialog(BuildContext context) async {
+    var value = await showDialog(
+      context: context,
+      builder: (BuildContext context) => new AlertDialog(
+        title: new Text('Nice Coffee!'),
+        content: new Text('登録成功しました。SNSでシェアしますか？'),
+        actions: <Widget>[
+          new SimpleDialogOption(
+            child: new Text('Yes'),
+            onPressed: () {
+              Navigator.pop(context, 'Yes');
+            },
+          ),
+          new SimpleDialogOption(
+            child: new Text('NO'),
+            onPressed: () {
+              Navigator.pop(context, 'No');
+            },
+          ),
+        ],
+      ),
+    );
+    switch (value) {
+      case 'Yes':
+        print('YES!!!');
+        await Share.share("ここに共有したい文字列");
+        break;
+      case 'No':
+        print('No!!!');
+        break;
+    }
   }
 }
