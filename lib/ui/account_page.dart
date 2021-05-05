@@ -50,5 +50,7 @@ class AccountPage extends StatelessWidget {
   // ログアウトする
   Future<void> _logout(BuildContext context) async {
     await context.read<LoginModel>().logout();
+    // 初期画面に戻る
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 }

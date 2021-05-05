@@ -9,6 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CardModel extends ChangeNotifier {
+  // スタンダードプラン MAX5件
+  static const standardLimit = 5;
+  // プレミアムプラン MAX100件
+  static const premiumLimit = 100;
+
   int bottomIndex = 0;
   File imageFile;
   bool isLoading = false;
@@ -23,7 +28,7 @@ class CardModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Stream<QuerySnapshot> findCardList() {
+  Stream<QuerySnapshot> findCardListHome() {
     // userIdは必ず指定する！
     String userId = 'TEST';
     if (LoginModel().user != null) {
@@ -33,6 +38,7 @@ class CardModel extends ChangeNotifier {
         .collection('coffee_cards')
         .where('userId', isEqualTo: userId)
         .orderBy('updatedAt', descending: true)
+        .limit(standardLimit)
         .snapshots();
     return coffeeCardList;
   }

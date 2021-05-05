@@ -11,16 +11,17 @@ import 'package:provider/provider.dart';
 class ListCardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    List<ListCard> _cardList = [];
-
     return _buildBody(context);
   }
 
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: CardModel().findCardList(),
+      stream: CardModel().findCardListHome(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
+
+        print(snapshot.data.docs);
+        print(snapshot.data.docs.isEmpty);
 
         return _buildList(context, snapshot.data.docs);
       },
@@ -54,5 +55,37 @@ class ListCardPage extends StatelessWidget {
             false),
       ),
     );
+  }
+
+  Future _showNoCoffeesDialog(BuildContext context) async {
+    var value = await showDialog(
+      context: context,
+      builder: (BuildContext context) => new AlertDialog(
+        title: new Text('No Coffee'),
+        content: new Text('最初の1杯を登録してみましょう'),
+        actions: <Widget>[
+          new SimpleDialogOption(
+            child: new Text('Yes'),
+            onPressed: () {
+              Navigator.pop(context, 'Yes');
+            },
+          ),
+          new SimpleDialogOption(
+            child: new Text('NO'),
+            onPressed: () {
+              Navigator.pop(context, 'No');
+            },
+          ),
+        ],
+      ),
+    );
+    switch (value) {
+      case 'Yes':
+        print('YES!!!');
+        break;
+      case 'No':
+        print('No!!!');
+        break;
+    }
   }
 }

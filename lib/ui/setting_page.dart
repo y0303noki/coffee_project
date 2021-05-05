@@ -1,4 +1,5 @@
 import 'package:coffee_project/ui/account_page.dart';
+import 'package:coffee_project/ui/tutorial_page.dart';
 import 'package:coffee_project/view_model/login_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class SettingPage extends StatelessWidget {
       ),
       body: ListView(children: [
         _openAccountPage("アカウント", Icon(Icons.person), context),
+        _tutorialPage('チュートリアル', Icon(Icons.book), context),
         // _settingListItem("通知", Icon(Icons.notifications), null),
       ]),
     );
@@ -59,6 +61,22 @@ class SettingPage extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => AccountPage(),
+            fullscreenDialog: true,
+          ),
+        );
+      },
+    );
+  }
+
+  // チュートリアル画面を開く
+  Widget _tutorialPage(String title, Icon icon, BuildContext context) {
+    return GestureDetector(
+      child: _settingContainer(title, icon),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TutorialPage(),
             fullscreenDialog: true,
           ),
         );
