@@ -17,7 +17,7 @@
     <script defer src="/__/firebase/8.4.3/firebase-analytics.js"></script>
     <script defer src="/__/firebase/8.4.3/firebase-remote-config.js"></script>
     <script defer src="/__/firebase/8.4.3/firebase-performance.js"></script>
-    <!-- 
+    <!--
       initialize the SDK after all desired features are loaded, set useEmulator to false
       to avoid connecting the SDK to running emulators.
     -->
@@ -68,13 +68,13 @@
         try {
           let app = firebase.app();
           let features = [
-            'auth', 
-            'database', 
+            'auth',
+            'database',
             'firestore',
             'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
+            'messaging',
+            'storage',
+            'analytics',
             'remoteConfig',
             'performance',
           ].filter(feature => typeof app[feature] === 'function');
@@ -84,6 +84,30 @@
           loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
         }
       });
+
     </script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/8.4.3/firebase-analytics.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  var firebaseConfig = {
+    apiKey: "AIzaSyA6DjWY5nJYZaHMLfB_FY1TLT6EswFzb7E",
+    authDomain: "coffeeproject-44dd3.firebaseapp.com",
+    projectId: "coffeeproject-44dd3",
+    storageBucket: "coffeeproject-44dd3.appspot.com",
+    messagingSenderId: "537524915169",
+    appId: "1:537524915169:web:e55c11edef1fd3260020a0",
+    measurementId: "G-FPYXT5F739"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
   </body>
 </html>
