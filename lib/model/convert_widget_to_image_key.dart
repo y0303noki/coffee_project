@@ -1,3 +1,13 @@
 import 'package:flutter/material.dart';
 
-final convertWidgetToImageKey = GlobalKey();
+class ConvertWidgetToImageKey {
+  // GlobalKey _imageKey = GlobalKey();
+
+  // getImageKey() {
+  //   return _imageKey;
+  // }
+
+  // setImageKey(GlobalKey imageKey) {
+  //   _imageKey = imageKey;
+  // }
+}

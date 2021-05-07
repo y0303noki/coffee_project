@@ -1,8 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:coffee_project/model/coffee_card.dart';
-import 'package:coffee_project/model/coffee.dart';
-import 'package:coffee_project/model/convert_widget_to_image_key.dart';
 import 'package:coffee_project/ui/list_card.dart';
 import 'package:coffee_project/view_model/card_model.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +29,7 @@ class AddOrEditCardPage extends StatelessWidget {
   // 名前
   String _name = '';
   // メモ
-  String memo = '';
+  String _memo = '';
   // 公開or非公開
   bool _isPublic = false;
   // スコア
@@ -47,11 +45,19 @@ class AddOrEditCardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 名前
+    TextEditingController _nameTextEditController =
+        TextEditingController(text: _name);
+
+    // メモ
+    TextEditingController _memoTextEditingController =
+        TextEditingController(text: _memo);
+
     isEdit = editCard != null;
     if (isEdit) {
       print(editCard);
       _name = editCard.name;
-      memo = editCard.memo;
+      _memo = editCard.memo;
       _isPublic = editCard.isPublic;
       _score = editCard.score;
       _imageUrl = editCard.imageUrl;
@@ -70,8 +76,8 @@ class AddOrEditCardPage extends StatelessWidget {
               Consumer<CardModel>(builder: (context, model, child) {
                 // 画像のファイルパスをセット
                 _imageFile = model.imageFile;
-                listCard = ListCard(_name, postDate, memo, _isPublic, _score,
-                    'A', _imageFile, null, true);
+                listCard = ListCard(_name, postDate, _memo, _isPublic, _score,
+                    'A', _imageFile, _imageUrl, !isEdit);
                 return Center(
                   child: SingleChildScrollView(
                     child: Column(
@@ -89,7 +95,7 @@ class AddOrEditCardPage extends StatelessWidget {
                           child: Column(
                             children: [
                               TextField(
-                                controller: TextEditingController(text: _name),
+                                controller: _nameTextEditController,
                                 decoration: InputDecoration(
                                   labelText: '名前',
                                   hintText: '何飲んだ？',
@@ -101,14 +107,14 @@ class AddOrEditCardPage extends StatelessWidget {
                                 },
                               ),
                               TextField(
-                                controller: TextEditingController(text: memo),
+                                controller: _memoTextEditingController,
                                 decoration: InputDecoration(
                                   labelText: 'ひとこと',
                                   hintText: 'メモ？',
                                 ),
                                 onChanged: (text) {
                                   // TODO: ここで取得したtextを使う
-                                  memo = text;
+                                  _memo = text;
                                   model.refresh();
                                 },
                               ),
@@ -163,12 +169,6 @@ class AddOrEditCardPage extends StatelessWidget {
                           },
                         ),
                         TextButton(
-                          child: Text('テスト用'),
-                          onPressed: () {
-                            _showSuccsessDialog(context);
-                          },
-                        ),
-                        TextButton(
                           child: Text('投稿する'),
                           onPressed: () async {
                             // ローディング開始
@@ -179,7 +179,7 @@ class AddOrEditCardPage extends StatelessWidget {
                             CoffeeCard addCard = new CoffeeCard(
                                 name: _name,
                                 score: _score,
-                                memo: memo,
+                                memo: _memo,
                                 isPublic: _isPublic,
                                 imageUrl: _imageUrl,
                                 updatedAt: now,
@@ -190,12 +190,14 @@ class AddOrEditCardPage extends StatelessWidget {
                             // ローディング終了
                             model.endLoading();
 
-                            final SnackBar snackBar = SnackBar(
-                              content: Text('投稿が完了しました！'),
-                            );
+                            await _showSuccsessDialog(context);
+
+                            // final SnackBar snackBar = SnackBar(
+                            //   content: Text('投稿が完了しました！'),
+                            // );
 
                             // 画面戻る
-                            Navigator.of(context).pop(snackBar);
+                            Navigator.of(context).pop(null);
                           },
                         ),
                       ],
@@ -251,7 +253,7 @@ class AddOrEditCardPage extends StatelessWidget {
         final bytes = await exportToImage(_globalKey);
         final nowUnixTime = DateTime.now().millisecondsSinceEpoch;
 
-        await Share.file('coffee Image', 'CoffeeProject$nowUnixTime',
+        await Share.file('coffee Image', 'CoffeeProject$nowUnixTime.png',
             bytes.buffer.asUint8List(), 'image/png',
             text: '今日の1杯を投稿しました！ #CoffeeProject');
 
