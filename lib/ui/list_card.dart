@@ -53,98 +53,7 @@ class ListCard extends StatelessWidget {
     String coffeeDateStr = DateUtility(_coffeeDate).toDateFormatted();
     return RepaintBoundary(
       key: _globalKey,
-      child: cardWidget(coffeeDateStr, context, tempCard
-
-          //   clipBehavior: Clip.antiAlias,
-          //   shape: RoundedRectangleBorder(
-          //     borderRadius: BorderRadius.circular(24),
-          //   ),
-          //   child: Column(
-          //     children: [
-          //       Row(
-          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //         children: [
-          //           Stack(
-          //             children: [
-          //               Container(
-          //                 width: 200.0,
-          //                 height: 200.0,
-          //                 child: switchImage(),
-          //               ),
-          //               Padding(
-          //                 padding: EdgeInsets.only(
-          //                     top: 10, right: 0, bottom: 0, left: 20),
-          //                 child: Container(
-          //                   child: Text(
-          //                     coffeeDateStr,
-          //                     style: TextStyle(
-          //                       color: Colors.red,
-          //                       fontSize: 20,
-          //                     ),
-          //                   ),
-          //                 ),
-          //               ),
-          //             ],
-          //           ),
-          //           // TODO:公開設定、一旦表示しない
-          //           // Padding(
-          //           //   padding:
-          //           //       EdgeInsets.only(top: 10, right: 20, bottom: 0, left: 0),
-          //           //   child: Chip(
-          //           //     avatar: CircleAvatar(
-          //           //       backgroundColor: _isPublic != null && _isPublic
-          //           //           ? Colors.orange
-          //           //           : Colors.blue,
-          //           //     ),
-          //           //     label: Text(
-          //           //         _isPublic != null && _isPublic ? 'Public' : 'Private'),
-          //           //   ),
-          //           // ),
-          //         ],
-          //       ),
-          //       // Image.file(_imageFile),
-
-          //       Padding(
-          //         padding: EdgeInsets.only(top: 0, right: 0, bottom: 0, left: 0),
-          //         child: Text(
-          //           '$_name',
-          //           style: TextStyle(
-          //             fontWeight: FontWeight.bold,
-          //             color: Colors.black,
-          //             fontSize: 24,
-          //           ),
-          //         ),
-          //       ),
-          //       Padding(
-          //         padding: EdgeInsets.all(16).copyWith(bottom: 0),
-          //         child: Text(
-          //           _memo,
-          //           style: TextStyle(fontSize: 16),
-          //         ),
-          //       ),
-          //       Padding(
-          //         padding: EdgeInsets.only(top: 0, right: 0, bottom: 0, left: 20),
-          //         child: Row(
-          //           mainAxisAlignment: MainAxisAlignment.start,
-          //           children: [
-          //             RatingBarIndicator(
-          //               rating: _score.toDouble(),
-          //               itemBuilder: (context, index) => Icon(
-          //                 Icons.star,
-          //                 color: Colors.amber,
-          //               ),
-          //               itemCount: 5,
-          //               itemSize: 20.0,
-          //               direction: Axis.horizontal,
-          //             ),
-          //           ],
-          //         ),
-          //       ),
-          //       switchButtonBar(context, tempCard),
-          //     ],
-          //   ),
-          // ),
-          ),
+      child: cardWidget(coffeeDateStr, context, tempCard),
     );
   }
 
@@ -164,69 +73,29 @@ class ListCard extends StatelessWidget {
           height: 100,
           child: Image.asset('asset/images/coffeeSample.png'),
         );
-        // return Image.asset('asset/images/coffeeSample.png');
       }
     } else {
+      // if (_imageFile != null) {
+      //   return Container(
+      //     width: 100,
+      //     height: 100,
+      //     child: Image.file(_imageFile),
+      //   );
+      // }
+
       if (_imageUrl != null) {
         return Container(
           width: 100,
           height: 100,
           child: Image.network(_imageUrl),
         );
-        // return Image.network(_imageUrl);
       } else {
         return Container(
           width: 100,
           height: 100,
           child: Image.asset('asset/images/coffeeSample.png'),
         );
-        // return Image.asset('asset/images/coffeeSample.png');
       }
-    }
-  }
-
-  // 共有ボタンと編集ボタン
-  Widget switchButtonBar(BuildContext context, ListCard listCard) {
-    if (_isAddCard) {
-      return ButtonBar();
-    } else {
-      return ButtonBar(
-        alignment: MainAxisAlignment.start,
-        children: [
-          // SNSで共有ボタン
-          IconButton(
-            onPressed: () async {
-              final bytes = await exportToImage(_globalKey);
-              final nowUnixTime = DateTime.now().millisecondsSinceEpoch;
-
-              await Share.file('coffee Image', 'CoffeeProject$nowUnixTime.png',
-                  bytes.buffer.asUint8List(), 'image/png',
-                  text: '今日の1杯を投稿しました！ #CoffeeProject');
-            },
-            color: Colors.blue,
-            icon: Icon(Icons.share),
-          ),
-          // 編集ボタン
-          IconButton(
-            onPressed: () async {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddOrEditCardPage(listCard),
-                  fullscreenDialog: true,
-                ),
-              ).then((value) {
-                if (value is SnackBar) {
-                  // 保存が完了したら画面下部に完了メッセージを出す
-                  ScaffoldMessenger.of(context).showSnackBar(value);
-                }
-              });
-            },
-            color: Colors.blue,
-            icon: Icon(Icons.edit),
-          ),
-        ],
-      );
     }
   }
 
@@ -272,12 +141,15 @@ class ListCard extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  bottomLeft: Radius.circular(10),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    bottomLeft: Radius.circular(10),
+                  ),
+                  child: switchImage(),
                 ),
-                child: switchImage(),
               ),
               SizedBox(
                 width: 10,

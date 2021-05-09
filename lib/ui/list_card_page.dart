@@ -11,7 +11,54 @@ import 'package:provider/provider.dart';
 class ListCardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return _buildBody(context);
+    List<String> _items = ["A", "B", "C"];
+    String _selectedItem = "A";
+    final Size size = MediaQuery.of(context).size;
+    return ChangeNotifierProvider<CardModel>(
+      create: (_) => CardModel(),
+      child: Consumer<CardModel>(
+        builder: (context, model, child) {
+          return Column(
+            children: [
+              // bodyの上部に検索欄などの機能
+              Row(
+                children: [
+                  // Container(
+                  //   child: DropdownButton<String>(
+                  //     value: _selectedItem,
+                  //     onChanged: (String newValue) {
+                  //       _selectedItem = newValue;
+                  //       model.refresh();
+                  //     },
+                  //     selectedItemBuilder: (context) {
+                  //       return _items.map((String item) {
+                  //         return Text(
+                  //           item,
+                  //           style: TextStyle(color: Colors.pink),
+                  //         );
+                  //       }).toList();
+                  //     },
+                  //     items: _items.map((String item) {
+                  //       return DropdownMenuItem(
+                  //         value: item,
+                  //         child: Text(
+                  //           item,
+                  //           style: item == _selectedItem
+                  //               ? TextStyle(fontWeight: FontWeight.bold)
+                  //               : TextStyle(fontWeight: FontWeight.normal),
+                  //         ),
+                  //       );
+                  //     }).toList(),
+                  //   ),
+                  // ),
+                ],
+              ),
+              Expanded(child: _buildBody(context)),
+            ],
+          );
+        },
+      ),
+    );
   }
 
   Widget _buildBody(BuildContext context) {
@@ -19,9 +66,6 @@ class ListCardPage extends StatelessWidget {
       stream: CardModel().findCardListHome(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
-
-        print(snapshot.data.docs);
-        print(snapshot.data.docs.isEmpty);
 
         return _buildList(context, snapshot.data.docs);
       },
