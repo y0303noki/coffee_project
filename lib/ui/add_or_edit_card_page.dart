@@ -198,7 +198,6 @@ class AddOrEditCardPage extends StatelessWidget {
                                     score: _score,
                                     memo: _memo,
                                     isPublic: _isPublic,
-                                    imageUrl: _imageUrl,
                                     updatedAt: now,
                                     createdAt: now);
                                 final String addCardResult =
@@ -228,7 +227,6 @@ class AddOrEditCardPage extends StatelessWidget {
                                   score: _score,
                                   memo: _memo,
                                   isPublic: _isPublic,
-                                  imageUrl: _imageUrl,
                                 );
                                 final String updateCardResult =
                                     await model.updateCard(updateCard);

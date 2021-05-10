@@ -74,25 +74,25 @@ class HomePage extends StatelessWidget {
           body: _pageWidgets.elementAt(_bottomIndex),
           floatingActionButton: _floatingActionButtons.elementAt(_bottomIndex),
           // フッター とりあえず不要そうなのでコメントアウト
-          // bottomNavigationBar: BottomNavigationBar(
-          //   items: const <BottomNavigationBarItem>[
-          //     BottomNavigationBarItem(
-          //       icon: Icon(Icons.home),
-          //       label: 'List',
-          //     ),
-          //     BottomNavigationBarItem(
-          //       icon: Icon(Icons.school),
-          //       label: 'School',
-          //     ),
-          //   ],
-          //   currentIndex: _bottomIndex,
-          //   selectedItemColor: Colors.amber[800],
-          //   onTap: (index) {
-          //     // フッターを押して画面切り替え
-          //     _bottomIndex = index;
-          //     model.refresh();
-          //   },
-          // ),
+          bottomNavigationBar: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'List',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.school),
+                label: 'Album',
+              ),
+            ],
+            currentIndex: _bottomIndex,
+            selectedItemColor: Colors.amber[800],
+            onTap: (index) {
+              // フッターを押して画面切り替え
+              _bottomIndex = index;
+              model.refresh();
+            },
+          ),
         );
       }),
     );

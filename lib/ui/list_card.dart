@@ -68,14 +68,6 @@ class ListCard extends StatelessWidget {
         );
       }
     } else {
-      // if (_imageFile != null) {
-      //   return Container(
-      //     width: 100,
-      //     height: 100,
-      //     child: Image.file(_imageFile),
-      //   );
-      // }
-
       if (_imageUrl != null) {
         return Container(
           width: 100,

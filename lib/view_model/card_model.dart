@@ -76,7 +76,7 @@ class CardModel extends ChangeNotifier {
   }
 
   // 更新する情報をセットする
-  Map<String, dynamic> _setUpdateCard(CoffeeCard updateCard) {
+  Future<Map<String, dynamic>> _setUpdateCard(CoffeeCard updateCard) async {
     Map<String, dynamic> result = {};
     DateTime now = DateTime.now();
     result['updatedAt'] = now;
@@ -96,12 +96,17 @@ class CardModel extends ChangeNotifier {
     if (updateCard.score != null) {
       result['score'] = updateCard.score;
     }
+
+    if (imageFile != null) {
+      String imageUrl = await uploadImageUrl(updateCard);
+      result['imageUrl'] = imageUrl;
+    }
     return result;
   }
 
   Future<String> updateCard(CoffeeCard updateCard) async {
     // ドキュメント更新
-    Map<String, dynamic> updateData = _setUpdateCard(updateCard);
+    Map<String, dynamic> updateData = await _setUpdateCard(updateCard);
     final String docId = updateCard.id;
     if (docId == null) {
       print('aaaa');
