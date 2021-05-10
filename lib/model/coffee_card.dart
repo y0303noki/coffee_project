@@ -1,4 +1,5 @@
 class CoffeeCard {
+  String id;
   String name;
   int score;
   String memo;
@@ -8,7 +9,8 @@ class CoffeeCard {
   DateTime coffeeAt;
   DateTime updatedAt;
   CoffeeCard(
-      {this.name,
+      {this.id,
+      this.name,
       this.score,
       this.memo,
       this.isPublic,

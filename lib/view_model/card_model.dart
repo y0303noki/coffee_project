@@ -62,17 +62,86 @@ class CardModel extends ChangeNotifier {
     addObject['deletedAt'] = null;
 
     try {
-      final result = await FirebaseFirestore.instance
+      final DocumentReference result = await FirebaseFirestore.instance
           .collection('coffee_cards')
           .add(addObject);
+      final data = await result.get();
+      final String docId = data.id;
+      await _updateCardDocId(docId);
+      return 'ok';
+    } catch (e) {
+      isLoading = false;
+      return 'error';
+    }
+  }
+
+  // 更新する情報をセットする
+  Map<String, dynamic> _setUpdateCard(CoffeeCard updateCard) {
+    Map<String, dynamic> result = {};
+    DateTime now = DateTime.now();
+    result['updatedAt'] = now;
+
+    if (updateCard.name != null) {
+      result['name'] = updateCard.name;
+    }
+
+    if (updateCard.memo != null) {
+      result['memo'] = updateCard.memo;
+    }
+
+    if (updateCard.imageUrl != null) {
+      result['imageUrl'] = updateCard.imageUrl;
+    }
+
+    if (updateCard.score != null) {
+      result['score'] = updateCard.score;
+    }
+    return result;
+  }
+
+  Future<String> updateCard(CoffeeCard updateCard) async {
+    // ドキュメント更新
+    Map<String, dynamic> updateData = _setUpdateCard(updateCard);
+    final String docId = updateCard.id;
+    if (docId == null) {
+      print('aaaa');
+      return null;
+    }
+
+    try {
+      final result = await FirebaseFirestore.instance
+          .collection('coffee_cards')
+          .doc(docId)
+          .update(updateData);
       // isLoading = false;
       return 'ok';
     } catch (e) {
       isLoading = false;
       return 'error';
     }
+  }
 
-    // var userDoc = await result.get();
+  // docIdをセットする
+  Future<String> _updateCardDocId(String docId) async {
+    // ドキュメント更新
+    Map<String, dynamic> updateData = {};
+    updateData['id'] = docId;
+
+    if (docId == null) {
+      print('aaaa');
+      return null;
+    }
+
+    try {
+      final result = await FirebaseFirestore.instance
+          .collection('coffee_cards')
+          .doc(docId)
+          .update(updateData);
+      return 'ok';
+    } catch (e) {
+      isLoading = false;
+      return 'error';
+    }
   }
 
   Future showImagePicker() async {

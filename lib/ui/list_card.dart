@@ -11,20 +11,21 @@ import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'dart:ui' as ui;
 
 class ListCard extends StatelessWidget {
+  final String _id;
   final String _name;
   final DateTime _coffeeDate;
   final String _memo;
   final bool _isPublic;
   final int _score;
-  final String _desc;
   // 端末内の画像のアドレス
   final File _imageFile;
   // アップロード済みの画像のアドレス
   final String _imageUrl;
-  // True:追加画面 False:リスト画面
-  final bool _isAddCard;
+  // True:追加or編集画面 False:リスト画面
+  final bool _isAddOrUpdateCard;
 
   // getter
+  String get id => _id;
   String get name => _name;
   DateTime get coffeeDate => _coffeeDate;
   String get memo => _memo;
@@ -34,21 +35,13 @@ class ListCard extends StatelessWidget {
 
   GlobalKey _globalKey = GlobalKey();
 
-  ListCard(
-      this._name,
-      this._coffeeDate,
-      this._memo,
-      this._isPublic,
-      this._score,
-      this._desc,
-      this._imageFile,
-      this._imageUrl,
-      this._isAddCard);
+  ListCard(this._id, this._name, this._coffeeDate, this._memo, this._isPublic,
+      this._score, this._imageFile, this._imageUrl, this._isAddOrUpdateCard);
 
   @override
   Widget build(BuildContext context) {
-    ListCard tempCard = new ListCard(_name, _coffeeDate, _memo, _isPublic,
-        _score, _desc, _imageFile, _imageUrl, _isAddCard);
+    ListCard tempCard = new ListCard(_id, _name, _coffeeDate, _memo, _isPublic,
+        _score, _imageFile, _imageUrl, _isAddOrUpdateCard);
 
     String coffeeDateStr = DateUtility(_coffeeDate).toDateFormatted();
     return RepaintBoundary(
@@ -60,7 +53,7 @@ class ListCard extends StatelessWidget {
   // 画像を表示するところ
   // addCardとlistCardで表示する方法が違う
   Widget switchImage() {
-    if (_isAddCard) {
+    if (_isAddOrUpdateCard) {
       if (_imageFile != null) {
         return Container(
           width: 100,
@@ -140,9 +133,10 @@ class ListCard extends StatelessWidget {
           onTap: () => print('tap!'),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start, // 上寄せ
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(right: 10),
                 child: ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(10),
@@ -150,9 +144,6 @@ class ListCard extends StatelessWidget {
                   ),
                   child: switchImage(),
                 ),
-              ),
-              SizedBox(
-                width: 10,
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -194,37 +185,43 @@ class ListCard extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AddOrEditCardPage(listCard),
-                              fullscreenDialog: true,
-                            ),
-                          ).then((value) {
-                            if (value is SnackBar) {
-                              // 保存が完了したら画面下部に完了メッセージを出す
-                              ScaffoldMessenger.of(context).showSnackBar(value);
-                            }
-                          });
-                        },
+                        onPressed: _isAddOrUpdateCard
+                            ? null
+                            : () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        AddOrEditCardPage(listCard),
+                                    fullscreenDialog: true,
+                                  ),
+                                ).then((value) {
+                                  if (value is SnackBar) {
+                                    // 保存が完了したら画面下部に完了メッセージを出す
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(value);
+                                  }
+                                });
+                              },
                         color: Colors.blue,
                         icon: Icon(Icons.edit),
                       ),
                       // SNSで共有ボタン
                       IconButton(
-                        onPressed: () async {
-                          final bytes = await exportToImage(_globalKey);
-                          final nowUnixTime =
-                              DateTime.now().millisecondsSinceEpoch;
+                        onPressed: _isAddOrUpdateCard
+                            ? null
+                            : () async {
+                                final bytes = await exportToImage(_globalKey);
+                                final nowUnixTime =
+                                    DateTime.now().millisecondsSinceEpoch;
 
-                          await Share.file(
-                              'coffee Image',
-                              'CoffeeProject$nowUnixTime.png',
-                              bytes.buffer.asUint8List(),
-                              'image/png',
-                              text: '今日の1杯を投稿しました！ #CoffeeProject');
-                        },
+                                await Share.file(
+                                    'coffee Image',
+                                    'CoffeeProject$nowUnixTime.png',
+                                    bytes.buffer.asUint8List(),
+                                    'image/png',
+                                    text: '今日の1杯を投稿しました！ #CoffeeProject');
+                              },
                         color: Colors.blue,
                         icon: Icon(Icons.share),
                       ),

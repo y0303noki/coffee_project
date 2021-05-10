@@ -26,6 +26,8 @@ class AddOrEditCardPage extends StatelessWidget {
   ListCard editCard;
   bool isEdit;
 
+  // id
+  String _id;
   // 名前
   String _name = '';
   // メモ
@@ -47,7 +49,7 @@ class AddOrEditCardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     isEdit = editCard != null;
     if (isEdit) {
-      print(editCard);
+      _id = editCard.id;
       _name = editCard.name;
       _memo = editCard.memo;
       _isPublic = editCard.isPublic;
@@ -77,8 +79,8 @@ class AddOrEditCardPage extends StatelessWidget {
                 builder: (context, model, child) {
                   // 画像のファイルパスをセット
                   _imageFile = model.imageFile;
-                  listCard = ListCard(_name, postDate, _memo, _isPublic, _score,
-                      'A', _imageFile, _imageUrl, !isEdit);
+                  listCard = ListCard(_id, _name, postDate, _memo, _isPublic,
+                      _score, _imageFile, _imageUrl, true);
                   return Center(
                     child: SingleChildScrollView(
                       child: Column(
@@ -182,38 +184,63 @@ class AddOrEditCardPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          TextButton(
-                            child: Text('投稿する'),
-                            onPressed: () async {
-                              // ローディング開始
-                              model.startLoading();
+                          if (!isEdit)
+                            TextButton(
+                              child: Text('投稿する'),
+                              onPressed: () async {
+                                // ローディング開始
+                                model.startLoading();
 
-                              _name = _name == '' ? 'nullでした' : _name;
-                              DateTime now = DateTime.now();
-                              CoffeeCard addCard = new CoffeeCard(
+                                _name = _name == '' ? 'nullでした' : _name;
+                                DateTime now = DateTime.now();
+                                CoffeeCard addCard = new CoffeeCard(
+                                    name: _name,
+                                    score: _score,
+                                    memo: _memo,
+                                    isPublic: _isPublic,
+                                    imageUrl: _imageUrl,
+                                    updatedAt: now,
+                                    createdAt: now);
+                                final String addCardResult =
+                                    await model.addCard(addCard);
+                                // ローディング終了
+                                model.endLoading();
+
+                                await _showSuccsessDialog(context);
+
+                                // final SnackBar snackBar = SnackBar(
+                                //   content: Text('投稿が完了しました！'),
+                                // );
+
+                                // 画面戻る
+                                Navigator.of(context).pop(null);
+                              },
+                            ),
+                          if (isEdit)
+                            TextButton(
+                              child: Text('更新する'),
+                              onPressed: () async {
+                                // ローディング開始
+                                model.startLoading();
+                                CoffeeCard updateCard = new CoffeeCard(
+                                  id: _id,
                                   name: _name,
                                   score: _score,
                                   memo: _memo,
                                   isPublic: _isPublic,
                                   imageUrl: _imageUrl,
-                                  updatedAt: now,
-                                  createdAt: now);
-                              final String addCardResult =
-                                  await model.addCard(addCard);
-                              print(addCardResult);
-                              // ローディング終了
-                              model.endLoading();
+                                );
+                                final String updateCardResult =
+                                    await model.updateCard(updateCard);
+                                // ローディング終了
+                                model.endLoading();
 
-                              await _showSuccsessDialog(context);
+                                await _showSuccsessDialog(context);
 
-                              // final SnackBar snackBar = SnackBar(
-                              //   content: Text('投稿が完了しました！'),
-                              // );
-
-                              // 画面戻る
-                              Navigator.of(context).pop(null);
-                            },
-                          ),
+                                // 画面戻る
+                                Navigator.of(context).pop(null);
+                              },
+                            ),
                         ],
                       ),
                     ),

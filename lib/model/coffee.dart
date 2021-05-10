@@ -7,6 +7,7 @@ class Coffee {
   String memo;
   bool isPublic;
   String imageUrl;
+  final String id;
   final DocumentReference reference;
 
   // void setName(String name) {
@@ -28,6 +29,7 @@ class Coffee {
   Coffee.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['name'] != null),
         assert(map['score'] != null),
+        id = map['id'],
         name = map['name'],
         score = map['score'],
         coffeeAt = map['coffeeAt'].toDate(),

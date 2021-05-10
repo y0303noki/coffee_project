@@ -87,16 +87,8 @@ class ListCardPage extends StatelessWidget {
       key: ValueKey(test.name),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
-        child: ListCard(
-            test.name,
-            test.coffeeAt,
-            test.memo,
-            test.isPublic,
-            test.score,
-            'The best beach in Torrance',
-            null,
-            test.imageUrl,
-            false),
+        child: ListCard(test.id, test.name, test.coffeeAt, test.memo,
+            test.isPublic, test.score, null, test.imageUrl, false),
       ),
     );
   }
