@@ -43,23 +43,65 @@ class CardModel extends ChangeNotifier {
     return coffeeCardList;
   }
 
+  Stream<QuerySnapshot> findUserImage(String userImageId) {
+    // userIdは必ず指定する！
+    String userId = 'TEST';
+    if (LoginModel().user != null) {
+      userId = LoginModel().user.uid;
+    }
+    final userImage = FirebaseFirestore.instance
+        .collection('user_images')
+        .where('userId', isEqualTo: userId)
+        .where('id', isEqualTo: userImageId)
+        .snapshots();
+
+    return userImage;
+  }
+
+  Future<DocumentSnapshot> getUserInfo(String uid) {
+    String userId = 'TEST';
+    if (LoginModel().user != null) {
+      userId = LoginModel().user.uid;
+    }
+
+    final userImage =
+        FirebaseFirestore.instance.collection('user_images').doc(uid).get();
+
+    return userImage;
+  }
+
   Future<String> addCard(CoffeeCard addCoffeeCard) async {
     // isLoading = true;
     // ドキュメント作成
     Map<String, dynamic> addObject = new Map<String, dynamic>();
     String userId = LoginModel().user.uid;
-    String imageUrl = await uploadImageUrl(addCoffeeCard);
+
     addObject['userId'] = userId;
     addObject['name'] = addCoffeeCard.name;
     addObject['score'] = addCoffeeCard.score;
     addObject['memo'] = addCoffeeCard.memo;
     addObject['isPublic'] = addCoffeeCard.isPublic;
-    addObject['imageUrl'] = imageUrl;
+    // addObject['imageUrl'] = imageUrl;
     addObject['coffeeAt'] = addCoffeeCard.createdAt; // 作成日時と同じにしておく
     addObject['createdAt'] = addCoffeeCard.createdAt;
     addObject['updatedAt'] = addCoffeeCard.updatedAt;
     addObject['isDeleted'] = false;
     addObject['deletedAt'] = null;
+
+    String imageUrl = await uploadImageUrl(addCoffeeCard);
+    String userImageId = null;
+
+    // 画像アップロード
+    if (imageFile != null) {
+      try {
+        userImageId = await addUserImageUrl(imageUrl);
+      } catch (e) {
+        // 画像アップロードエラー
+        print(e);
+      }
+    }
+
+    addObject['userImageId'] = userImageId;
 
     try {
       final DocumentReference result = await FirebaseFirestore.instance
@@ -72,6 +114,34 @@ class CardModel extends ChangeNotifier {
     } catch (e) {
       isLoading = false;
       return 'error';
+    }
+  }
+
+  // userとimageのコレクション 1:n
+  // コレクションに追加したらdocIdを返す
+  Future<String> addUserImageUrl(String imageUrl) async {
+    // ドキュメント作成
+    DateTime now = DateTime.now();
+    Map<String, dynamic> addObject = new Map<String, dynamic>();
+    String userId = LoginModel().user.uid;
+    addObject['userId'] = userId;
+    addObject['imageUrl'] = imageUrl;
+    addObject['createdAt'] = now;
+    addObject['updatedAt'] = now;
+    addObject['isDeleted'] = false;
+    addObject['deletedAt'] = null;
+
+    try {
+      final DocumentReference result = await FirebaseFirestore.instance
+          .collection('user_images')
+          .add(addObject);
+      final data = await result.get();
+      final String docId = data.id;
+      await _updateUserImageDocId(docId);
+      return docId;
+    } catch (e) {
+      isLoading = false;
+      return null;
     }
   }
 
@@ -132,14 +202,27 @@ class CardModel extends ChangeNotifier {
     Map<String, dynamic> updateData = {};
     updateData['id'] = docId;
 
-    if (docId == null) {
-      print('aaaa');
-      return null;
-    }
-
     try {
       final result = await FirebaseFirestore.instance
           .collection('coffee_cards')
+          .doc(docId)
+          .update(updateData);
+      return 'ok';
+    } catch (e) {
+      isLoading = false;
+      return 'error';
+    }
+  }
+
+  // docIdをセットする
+  Future<String> _updateUserImageDocId(String docId) async {
+    // ドキュメント更新
+    Map<String, dynamic> updateData = {};
+    updateData['id'] = docId;
+
+    try {
+      final result = await FirebaseFirestore.instance
+          .collection('user_images')
           .doc(docId)
           .update(updateData);
       return 'ok';

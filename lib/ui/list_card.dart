@@ -2,8 +2,11 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:coffee_project/model/userImage.dart';
 import 'package:coffee_project/ui/add_or_edit_card_page.dart';
 import 'package:coffee_project/utils/date_utility.dart';
+import 'package:coffee_project/view_model/card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -19,8 +22,7 @@ class ListCard extends StatelessWidget {
   final int _score;
   // 端末内の画像のアドレス
   final File _imageFile;
-  // アップロード済みの画像のアドレス
-  final String _imageUrl;
+  final String _userImageId;
   // True:追加or編集画面 False:リスト画面
   final bool _isAddOrUpdateCard;
 
@@ -31,17 +33,17 @@ class ListCard extends StatelessWidget {
   String get memo => _memo;
   bool get isPublic => _isPublic;
   int get score => _score;
-  String get imageUrl => _imageUrl;
+  String get userImageId => _userImageId;
 
   GlobalKey _globalKey = GlobalKey();
 
   ListCard(this._id, this._name, this._coffeeDate, this._memo, this._isPublic,
-      this._score, this._imageFile, this._imageUrl, this._isAddOrUpdateCard);
+      this._score, this._imageFile, this._userImageId, this._isAddOrUpdateCard);
 
   @override
   Widget build(BuildContext context) {
     ListCard tempCard = new ListCard(_id, _name, _coffeeDate, _memo, _isPublic,
-        _score, _imageFile, _imageUrl, _isAddOrUpdateCard);
+        _score, _imageFile, _userImageId, _isAddOrUpdateCard);
 
     String coffeeDateStr = DateUtility(_coffeeDate).toDateFormatted();
     return RepaintBoundary(
@@ -68,20 +70,47 @@ class ListCard extends StatelessWidget {
         );
       }
     } else {
-      if (_imageUrl != null) {
-        return Container(
-          width: 100,
-          height: 100,
-          child: Image.network(_imageUrl),
-        );
-      } else {
+      return _coffeeImage(_userImageId);
+    }
+  }
+
+  Widget _coffeeImage(String userImageId) {
+    return FutureBuilder(
+      // future属性で非同期処理を書く
+      future: CardModel().getUserInfo(userImageId),
+      // future: chatHelper.getUserInfo(ref.get()),
+      builder: (context, snapshot) {
+        // 取得完了するまで別のWidgetを表示する
+        if (userImageId != null) {
+          if (!snapshot.hasData) {
+            return Container(
+              color: Colors.grey,
+              width: 100,
+              height: 100,
+            );
+          }
+        }
+
+        if (snapshot.connectionState == ConnectionState.done) {
+          Map<String, dynamic> userImageData = snapshot.data.data();
+          String imageUrl = null;
+          if (userImageData != null) {
+            imageUrl = userImageData['imageUrl'];
+            return Container(
+              width: 100,
+              height: 100,
+              child: Image.network(imageUrl),
+            );
+          }
+        }
+
         return Container(
           width: 100,
           height: 100,
           child: Image.asset('asset/images/coffeeSample.png'),
         );
-      }
-    }
+      },
+    );
   }
 
   // Widgetをimageに変換してByteDataを返す

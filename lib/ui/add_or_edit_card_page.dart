@@ -54,7 +54,7 @@ class AddOrEditCardPage extends StatelessWidget {
       _memo = editCard.memo;
       _isPublic = editCard.isPublic;
       _score = editCard.score;
-      _imageUrl = editCard.imageUrl;
+      // _imageUrl = editCard.imageUrl;
     }
 
     // 名前
@@ -80,7 +80,7 @@ class AddOrEditCardPage extends StatelessWidget {
                   // 画像のファイルパスをセット
                   _imageFile = model.imageFile;
                   listCard = ListCard(_id, _name, postDate, _memo, _isPublic,
-                      _score, _imageFile, _imageUrl, true);
+                      _score, _imageFile, null, true);
                   return Center(
                     child: SingleChildScrollView(
                       child: Column(

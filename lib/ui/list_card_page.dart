@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coffee_project/model/coffee.dart';
 import 'package:coffee_project/model/test.dart';
+import 'package:coffee_project/model/userImage.dart';
 import 'package:coffee_project/ui/list_card.dart';
 import 'package:coffee_project/view_model/card_model.dart';
 import 'package:coffee_project/view_model/home_model.dart';
@@ -80,15 +81,15 @@ class ListCardPage extends StatelessWidget {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    // final record = Record.fromSnapshot(data);
-    // final test = Test.fromSnapshot(data);
     final test = Coffee.fromSnapshot(data);
+    final String userImageId = test.userImageId;
+
     return Padding(
       key: ValueKey(test.name),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
         child: ListCard(test.id, test.name, test.coffeeAt, test.memo,
-            test.isPublic, test.score, null, test.imageUrl, false),
+            test.isPublic, test.score, null, userImageId, false),
       ),
     );
   }
