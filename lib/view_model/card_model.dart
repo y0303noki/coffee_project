@@ -43,6 +43,20 @@ class CardModel extends ChangeNotifier {
     return coffeeCardList;
   }
 
+  Stream<QuerySnapshot> findUserImageByUserId() {
+    // userIdは必ず指定する！
+    String userId = 'TEST';
+    if (LoginModel().user != null) {
+      userId = LoginModel().user.uid;
+    }
+    final userImage = FirebaseFirestore.instance
+        .collection('user_images')
+        .where('userId', isEqualTo: userId)
+        .snapshots();
+
+    return userImage;
+  }
+
   Stream<QuerySnapshot> findUserImage(String userImageId) {
     // userIdは必ず指定する！
     String userId = 'TEST';

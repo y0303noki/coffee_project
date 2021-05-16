@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:coffee_project/model/coffee.dart';
-import 'package:coffee_project/model/test.dart';
 import 'package:coffee_project/model/userImage.dart';
-import 'package:coffee_project/ui/album_grid.dart';
-import 'package:coffee_project/ui/list_card.dart';
+import 'package:coffee_project/ui/album_detail_page.dart';
 import 'package:coffee_project/view_model/card_model.dart';
-import 'package:coffee_project/view_model/home_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -17,31 +13,15 @@ class AlbumPage extends StatelessWidget {
       create: (_) => CardModel(),
       child: Consumer<CardModel>(
         builder: (context, model, child) {
-          return GridView.count(crossAxisCount: 2, children: [
-            _imageItem(''),
-            _imageItem(''),
-            _imageItem(''),
-          ]);
-
-          ;
+          return _buildBody(context);
         },
-      ),
-    );
-  }
-
-  Widget _imageItem(String name) {
-    var image = "asset/images/coffeeSample.png";
-    return Container(
-      child: Image.asset(
-        image,
-        fit: BoxFit.cover,
       ),
     );
   }
 
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: CardModel().findCardListHome(),
+      stream: CardModel().findUserImageByUserId(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
 
@@ -51,19 +31,66 @@ class AlbumPage extends StatelessWidget {
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
-    return ListView(
-      padding: const EdgeInsets.only(top: 20.0),
-      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+    // DBから取得した値を変換
+    List<UserImage> userImageList = [];
+    for (DocumentSnapshot snap in snapshot) {
+      userImageList.add(
+        _buildListItem(snap),
+      );
+    }
+
+    // Widgetに変換
+    List<Widget> userImageWidget = [];
+    for (UserImage userImage in userImageList) {
+      userImageWidget.add(
+        _photoItem(context, userImage.id, userImage.imageUrl),
+      );
+    }
+
+    return GridView.count(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      crossAxisCount: 2,
+      children: userImageWidget,
     );
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final test = Coffee.fromSnapshot(data);
-    final String userImageId = test.userImageId;
-
-    return AlbumGrid(
-      test.id,
-      userImageId,
+  Widget _photoItem(BuildContext context, String imageId, String imageUrl) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Stack(
+        children: [
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AlbumDetailPage(imageId, imageUrl),
+                  fullscreenDialog: true,
+                ),
+              ).then((value) {
+                if (value is SnackBar) {
+                  // 保存が完了したら画面下部に完了メッセージを出す
+                  ScaffoldMessenger.of(context).showSnackBar(value);
+                }
+              });
+            },
+            child: Container(
+              width: 200,
+              height: 200,
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
+  }
+
+  UserImage _buildListItem(DocumentSnapshot data) {
+    final userImage = UserImage.fromSnapshot(data);
+    return userImage;
   }
 }
