@@ -7,6 +7,7 @@ import 'package:coffee_project/view_model/login_model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class CardModel extends ChangeNotifier {
   // スタンダードプラン MAX5件
@@ -90,11 +91,15 @@ class CardModel extends ChangeNotifier {
     Map<String, dynamic> addObject = new Map<String, dynamic>();
     String userId = LoginModel().user.uid;
 
+    // user_imagesのidとstorageのid
+    final String uuId = Uuid().v4();
+
     addObject['userId'] = userId;
     addObject['name'] = addCoffeeCard.name;
     addObject['score'] = addCoffeeCard.score;
     addObject['memo'] = addCoffeeCard.memo;
     addObject['isPublic'] = addCoffeeCard.isPublic;
+    addObject['userImageId'] = uuId;
     // addObject['imageUrl'] = imageUrl;
     addObject['coffeeAt'] = addCoffeeCard.createdAt; // 作成日時と同じにしておく
     addObject['createdAt'] = addCoffeeCard.createdAt;
@@ -102,20 +107,16 @@ class CardModel extends ChangeNotifier {
     addObject['isDeleted'] = false;
     addObject['deletedAt'] = null;
 
-    String imageUrl = await uploadImageUrl(addCoffeeCard);
-    String userImageId = null;
-
+    String imageUrl = await uploadImageUrl(addCoffeeCard, uuId);
     // 画像アップロード
     if (imageFile != null) {
       try {
-        userImageId = await addUserImageUrl(imageUrl);
+        await addUserImageUrl(imageUrl, uuId);
       } catch (e) {
         // 画像アップロードエラー
         print(e);
       }
     }
-
-    addObject['userImageId'] = userImageId;
 
     try {
       final DocumentReference result = await FirebaseFirestore.instance
@@ -133,7 +134,7 @@ class CardModel extends ChangeNotifier {
 
   // userとimageのコレクション 1:n
   // コレクションに追加したらdocIdを返す
-  Future<String> addUserImageUrl(String imageUrl) async {
+  Future<String> addUserImageUrl(String imageUrl, String uuId) async {
     // ドキュメント作成
     DateTime now = DateTime.now();
     Map<String, dynamic> addObject = new Map<String, dynamic>();
@@ -146,13 +147,13 @@ class CardModel extends ChangeNotifier {
     addObject['deletedAt'] = null;
 
     try {
-      final DocumentReference result = await FirebaseFirestore.instance
+      var result = FirebaseFirestore.instance
           .collection('user_images')
-          .add(addObject);
-      final data = await result.get();
-      final String docId = data.id;
-      await _updateUserImageDocId(docId);
-      return docId;
+          .doc(uuId)
+          .set(addObject);
+
+      await _updateUserImageDocId(uuId);
+      return uuId;
     } catch (e) {
       isLoading = false;
       return null;
@@ -182,8 +183,20 @@ class CardModel extends ChangeNotifier {
     }
 
     if (imageFile != null) {
-      String imageUrl = await uploadImageUrl(updateCard);
-      result['imageUrl'] = imageUrl;
+      // user_imagesのidとstorageのid
+      final String uuId = Uuid().v4();
+
+      String imageUrl = await uploadImageUrl(updateCard, uuId);
+      result['userImageId'] = uuId;
+      // 画像アップロード
+      if (imageFile != null) {
+        try {
+          await addUserImageUrl(imageUrl, uuId);
+        } catch (e) {
+          // 画像アップロードエラー
+          print(e);
+        }
+      }
     }
     return result;
   }
@@ -258,19 +271,39 @@ class CardModel extends ChangeNotifier {
   }
 
   // storageへアップロード
-  Future<String> uploadImageUrl(CoffeeCard addCoffeeCard) async {
+  Future<String> uploadImageUrl(CoffeeCard addCoffeeCard, String uuId) async {
     if (imageFile == null) {
       return null;
+    }
+    String userId = 'errorUserId';
+    if (LoginModel().user != null) {
+      userId = LoginModel().user.uid;
     }
     final storage = FirebaseStorage.instance;
     TaskSnapshot snapshot = await storage
         .ref()
-        .child("coffeeImages/${addCoffeeCard.name}")
+        .child("coffeeImages/user/$userId/$uuId")
         .putFile(imageFile);
 
     final downloadUrl = snapshot.ref.getDownloadURL();
 
     return downloadUrl;
+  }
+
+  // fireStorageからファイルを削除する
+  Future<void> deleteStorageByUserImageId(String id) async {
+    String userId = 'errorUserId';
+    if (LoginModel().user != null) {
+      userId = LoginModel().user.uid;
+    }
+    final storage = FirebaseStorage.instance;
+    var storageRef = storage.ref().child('coffeeImages/user/$userId/$id');
+
+    try {
+      storageRef.delete();
+    } catch (e) {
+      print('fireStorage の削除に失敗しました。');
+    }
   }
 
   void refresh() {
