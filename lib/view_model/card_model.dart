@@ -259,6 +259,25 @@ class CardModel extends ChangeNotifier {
     }
   }
 
+  Future<void> deleteUserImageFunc(String docId) {
+    _deleteUserImageDocId(docId);
+    _deleteStorageByUserImageId(docId);
+  }
+
+  // user_imagesのデータを物理削除
+  Future<String> _deleteUserImageDocId(String docId) async {
+    // ドキュメント削除
+    try {
+      await FirebaseFirestore.instance
+          .collection('user_images')
+          .doc(docId)
+          .delete();
+      return 'delete ok';
+    } catch (e) {
+      return 'error';
+    }
+  }
+
   Future showImagePicker() async {
     final picker = ImagePicker();
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
@@ -291,7 +310,7 @@ class CardModel extends ChangeNotifier {
   }
 
   // fireStorageからファイルを削除する
-  Future<void> deleteStorageByUserImageId(String id) async {
+  Future<void> _deleteStorageByUserImageId(String id) async {
     String userId = 'errorUserId';
     if (LoginModel().user != null) {
       userId = LoginModel().user.uid;

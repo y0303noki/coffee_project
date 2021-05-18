@@ -58,7 +58,9 @@ class AlbumDetailPage extends StatelessWidget {
                       iconSize: 50,
                       color: Colors.red,
                       icon: Icon(Icons.delete),
-                      onPressed: () {},
+                      onPressed: () {
+                        CardModel().deleteUserImageFunc(_imageId);
+                      },
                     ),
                     Text(
                       '削除',
