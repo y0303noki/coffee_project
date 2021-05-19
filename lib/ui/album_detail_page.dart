@@ -39,18 +39,7 @@ class AlbumDetailPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
-                  children: [
-                    IconButton(
-                      iconSize: 50,
-                      color: Colors.pink,
-                      icon: Icon(Icons.favorite),
-                      onPressed: () {},
-                    ),
-                    Text(
-                      'お気に入り',
-                      style: TextStyle(color: Colors.black, fontSize: 15.0),
-                    ),
-                  ],
+                  children: [],
                 ),
                 Column(
                   children: [
@@ -58,8 +47,10 @@ class AlbumDetailPage extends StatelessWidget {
                       iconSize: 50,
                       color: Colors.red,
                       icon: Icon(Icons.delete),
-                      onPressed: () {
-                        CardModel().deleteUserImageFunc(_imageId);
+                      onPressed: () async {
+                        // 画像をfireStoregeから削除して画面戻る
+                        await CardModel().deleteUserImageFunc(_imageId);
+                        Navigator.of(context).pop();
                       },
                     ),
                     Text(
