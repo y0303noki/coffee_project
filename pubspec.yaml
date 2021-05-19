@@ -23,6 +23,7 @@ dependencies:
   image_picker: ^0.7.4
   firebase_storage: ^8.0.5
   esys_flutter_share: ^1.0.2
+  uuid: ^3.0.4
   flutter_localizations:
     sdk: flutter
 

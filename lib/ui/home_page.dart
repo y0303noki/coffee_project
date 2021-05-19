@@ -1,5 +1,6 @@
 import 'package:coffee_project/ui/account_page.dart';
 import 'package:coffee_project/ui/add_or_edit_card_page.dart';
+import 'package:coffee_project/ui/album_page.dart';
 import 'package:coffee_project/ui/list_card_page.dart';
 import 'package:coffee_project/ui/setting_page.dart';
 import 'package:coffee_project/view_model/home_model.dart';
@@ -15,7 +16,7 @@ class HomePage extends StatelessWidget {
     int _bottomIndex = 0;
     final _pageWidgets = [
       ListCardPage(),
-      PageWidget(color: Colors.blue, title: 'Album'),
+      AlbumPage(),
     ];
 
     final _floatingActionButtons = [

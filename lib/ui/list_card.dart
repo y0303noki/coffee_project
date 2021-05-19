@@ -151,19 +151,27 @@ class ListCard extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
           splashColor: Color(0x30f010f0),
-          onTap: () => print('tap!'),
+          // onTap: () => print('tap!'),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start, // 上寄せ
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(right: 10),
+                padding: const EdgeInsets.only(right: 0),
                 child: ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(10),
                     bottomLeft: Radius.circular(10),
                   ),
-                  child: switchImage(),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          bottomLeft: Radius.circular(10),
+                        ),
+                        color: Colors.white10),
+                    child: switchImage(),
+                  ),
                 ),
               ),
               Column(
