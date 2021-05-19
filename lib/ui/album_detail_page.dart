@@ -23,43 +23,39 @@ class AlbumDetailPage extends StatelessWidget {
     //   ),
     // );
     return Scaffold(
-      appBar: AppBar(
-        title: Text('画像'),
-      ),
+      backgroundColor: Colors.black.withOpacity(0.5),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(),
+          Container(
+            child: Row(
+              children: [
+                IconButton(
+                  padding: EdgeInsets.only(top: 60),
+                  iconSize: 20,
+                  color: Colors.white,
+                  icon: Icon(Icons.close),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
           Center(
             child: Image.network(_imageUrl),
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(10, 0, 10, 50),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [],
-                ),
-                Column(
-                  children: [
-                    IconButton(
-                      iconSize: 50,
-                      color: Colors.red,
-                      icon: Icon(Icons.delete),
-                      onPressed: () async {
-                        // 画像をfireStoregeから削除して画面戻る
-                        await CardModel().deleteUserImageFunc(_imageId);
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    Text(
-                      '削除',
-                      style: TextStyle(color: Colors.black, fontSize: 15.0),
-                    ),
-                  ],
-                ),
-              ],
+            child: IconButton(
+              iconSize: 50,
+              color: Colors.red,
+              icon: Icon(Icons.delete_outline),
+              onPressed: () async {
+                // 画像をfireStoregeから削除して画面戻る
+                await CardModel().deleteUserImageFunc(_imageId);
+                Navigator.of(context).pop();
+              },
             ),
           ),
         ],
