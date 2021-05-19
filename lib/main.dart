@@ -22,7 +22,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        theme: ThemeData.light(),
+        theme: ThemeData(
+          primarySwatch: Colors.brown,
+        ),
         darkTheme: ThemeData.dark(),
         // home: HomePage(),
         home: _LoginCheck(),

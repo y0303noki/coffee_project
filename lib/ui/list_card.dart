@@ -96,10 +96,14 @@ class ListCard extends StatelessWidget {
           String imageUrl = null;
           if (userImageData != null) {
             imageUrl = userImageData['imageUrl'];
-            return Container(
-              width: 100,
-              height: 100,
-              child: Image.network(imageUrl),
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: Image.network(
+                imageUrl,
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
             );
           }
         }
@@ -162,12 +166,16 @@ class ListCard extends StatelessWidget {
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(10),
                     bottomLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
                   ),
                   child: Container(
                     decoration: const BoxDecoration(
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(10),
                           bottomLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
                         ),
                         color: Colors.white10),
                     child: switchImage(),

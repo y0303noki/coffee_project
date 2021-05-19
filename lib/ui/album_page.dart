@@ -75,11 +75,12 @@ class AlbumPage extends StatelessWidget {
                 }
               });
             },
-            child: Container(
-              width: 200,
-              height: 200,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
               child: Image.network(
                 imageUrl,
+                width: 200,
+                height: 200,
                 fit: BoxFit.cover,
               ),
             ),

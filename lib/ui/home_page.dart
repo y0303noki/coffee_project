@@ -53,7 +53,7 @@ class HomePage extends StatelessWidget {
       child: Consumer<HomeModel>(builder: (context, model, child) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('Coffee'),
+            // title: Text('Coffee'),
             actions: [
               IconButton(
                 icon: Icon(
