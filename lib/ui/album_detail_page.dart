@@ -30,6 +30,7 @@ class AlbumDetailPage extends StatelessWidget {
           Container(
             child: Row(
               children: [
+                // バツボタン
                 IconButton(
                   padding: EdgeInsets.only(top: 60),
                   iconSize: 20,
@@ -50,11 +51,14 @@ class AlbumDetailPage extends StatelessWidget {
             child: IconButton(
               iconSize: 50,
               color: Colors.red,
-              icon: Icon(Icons.delete_outline),
+              icon: Icon(Icons.delete_outline_outlined),
               onPressed: () async {
                 // 画像をfireStoregeから削除して画面戻る
                 await CardModel().deleteUserImageFunc(_imageId);
-                Navigator.of(context).pop();
+                final SnackBar snackBar = SnackBar(
+                  content: Text('削除が完了しました。'),
+                );
+                Navigator.of(context).pop(snackBar);
               },
             ),
           ),

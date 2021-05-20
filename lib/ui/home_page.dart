@@ -73,7 +73,9 @@ class HomePage extends StatelessWidget {
             ],
           ),
           body: _pageWidgets.elementAt(_bottomIndex),
-          floatingActionButton: _floatingActionButtons.elementAt(_bottomIndex),
+          floatingActionButton: _bottomIndex == 0
+              ? _floatingActionButtons.elementAt(_bottomIndex)
+              : null,
           // フッター とりあえず不要そうなのでコメントアウト
           bottomNavigationBar: BottomNavigationBar(
             items: const <BottomNavigationBarItem>[

@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coffee_project/model/userImage.dart';
 import 'package:coffee_project/ui/add_or_edit_card_page.dart';
+import 'package:coffee_project/ui/album_detail_page.dart';
 import 'package:coffee_project/utils/date_utility.dart';
 import 'package:coffee_project/view_model/card_model.dart';
 import 'package:flutter/material.dart';
@@ -96,13 +97,30 @@ class ListCard extends StatelessWidget {
           String imageUrl = null;
           if (userImageData != null) {
             imageUrl = userImageData['imageUrl'];
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: Image.network(
-                imageUrl,
-                width: 100,
-                height: 100,
-                fit: BoxFit.cover,
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        AlbumDetailPage(userImageId, imageUrl),
+                    fullscreenDialog: true,
+                  ),
+                ).then((value) {
+                  if (value is SnackBar) {
+                    // 保存が完了したら画面下部に完了メッセージを出す
+                    ScaffoldMessenger.of(context).showSnackBar(value);
+                  }
+                });
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.network(
+                  imageUrl,
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
               ),
             );
           }
