@@ -203,19 +203,19 @@ class AddOrEditCardPage extends StatelessWidget {
                                     isPublic: _isPublic,
                                     updatedAt: now,
                                     createdAt: now);
-                                final String addCardResult =
-                                    await model.addCard(addCard);
+                                await model.addCard(addCard);
                                 // ローディング終了
                                 model.endLoading();
 
-                                await _showSuccsessDialog(context);
+                                // SNS投稿ダイアログ
+                                // await _showSuccsessDialog(context);
 
-                                // final SnackBar snackBar = SnackBar(
-                                //   content: Text('投稿が完了しました！'),
-                                // );
+                                final SnackBar snackBar = SnackBar(
+                                  content: Text('投稿が完了しました！'),
+                                );
 
                                 // 画面戻る
-                                Navigator.of(context).pop(null);
+                                Navigator.of(context).pop(snackBar);
                               },
                             ),
                           if (isEdit)
