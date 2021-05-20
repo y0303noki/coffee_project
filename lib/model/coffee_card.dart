@@ -4,7 +4,8 @@ class CoffeeCard {
   int score;
   String memo;
   bool isPublic;
-  String imageUrl;
+  // String imageUrl;
+  String userImageId;
   DateTime createdAt;
   DateTime coffeeAt;
   DateTime updatedAt;
@@ -14,7 +15,7 @@ class CoffeeCard {
       this.score,
       this.memo,
       this.isPublic,
-      this.imageUrl,
+      this.userImageId,
       this.updatedAt,
       this.createdAt});
 }

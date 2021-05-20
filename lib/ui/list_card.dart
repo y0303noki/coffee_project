@@ -57,6 +57,12 @@ class ListCard extends StatelessWidget {
   // addCardとlistCardで表示する方法が違う
   Widget switchImage() {
     if (_isAddOrUpdateCard) {
+      // 編集画面
+      if (_userImageId != null) {
+        return _coffeeImage(_userImageId);
+      }
+
+      // 追加画面
       if (_imageFile != null) {
         return Container(
           width: 100,
@@ -98,21 +104,23 @@ class ListCard extends StatelessWidget {
           if (userImageData != null) {
             imageUrl = userImageData['imageUrl'];
             return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        AlbumDetailPage(userImageId, imageUrl),
-                    fullscreenDialog: true,
-                  ),
-                ).then((value) {
-                  if (value is SnackBar) {
-                    // 保存が完了したら画面下部に完了メッセージを出す
-                    ScaffoldMessenger.of(context).showSnackBar(value);
-                  }
-                });
-              },
+              onTap: _isAddOrUpdateCard
+                  ? null
+                  : () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              AlbumDetailPage(userImageId, imageUrl),
+                          fullscreenDialog: true,
+                        ),
+                      ).then((value) {
+                        if (value is SnackBar) {
+                          // 保存が完了したら画面下部に完了メッセージを出す
+                          ScaffoldMessenger.of(context).showSnackBar(value);
+                        }
+                      });
+                    },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
                 child: Image.network(
@@ -179,7 +187,7 @@ class ListCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start, // 上寄せ
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(right: 0),
+                padding: const EdgeInsets.only(right: 10),
                 child: ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(10),

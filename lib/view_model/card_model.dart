@@ -174,9 +174,7 @@ class CardModel extends ChangeNotifier {
       result['memo'] = updateCard.memo;
     }
 
-    if (updateCard.imageUrl != null) {
-      result['imageUrl'] = updateCard.imageUrl;
-    }
+    result['userImageId'] = updateCard.userImageId;
 
     if (updateCard.score != null) {
       result['score'] = updateCard.score;
@@ -206,7 +204,6 @@ class CardModel extends ChangeNotifier {
     Map<String, dynamic> updateData = await _setUpdateCard(updateCard);
     final String docId = updateCard.id;
     if (docId == null) {
-      print('aaaa');
       return null;
     }
 

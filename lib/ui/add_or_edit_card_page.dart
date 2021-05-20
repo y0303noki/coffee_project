@@ -39,6 +39,7 @@ class AddOrEditCardPage extends StatelessWidget {
   // 画像
   String _imageUrl = null;
   File _imageFile = null;
+  String _userImageId = null;
 
   ListCard listCard;
 
@@ -54,6 +55,7 @@ class AddOrEditCardPage extends StatelessWidget {
       _memo = editCard.memo;
       _isPublic = editCard.isPublic;
       _score = editCard.score;
+      _userImageId = editCard.userImageId;
       // _imageUrl = editCard.imageUrl;
     }
 
@@ -80,7 +82,7 @@ class AddOrEditCardPage extends StatelessWidget {
                   // 画像のファイルパスをセット
                   _imageFile = model.imageFile;
                   listCard = ListCard(_id, _name, postDate, _memo, _isPublic,
-                      _score, _imageFile, null, true);
+                      _score, _imageFile, _userImageId, true);
                   return Center(
                     child: SingleChildScrollView(
                       child: Column(
@@ -179,6 +181,7 @@ class AddOrEditCardPage extends StatelessWidget {
                                 child: Text('画像リセット'),
                                 onPressed: () {
                                   model.imageFile = null;
+                                  _userImageId = null;
                                   model.refresh();
                                 },
                               ),
@@ -222,12 +225,12 @@ class AddOrEditCardPage extends StatelessWidget {
                                 // ローディング開始
                                 model.startLoading();
                                 CoffeeCard updateCard = new CoffeeCard(
-                                  id: _id,
-                                  name: _name,
-                                  score: _score,
-                                  memo: _memo,
-                                  isPublic: _isPublic,
-                                );
+                                    id: _id,
+                                    name: _name,
+                                    score: _score,
+                                    memo: _memo,
+                                    isPublic: _isPublic,
+                                    userImageId: _userImageId);
                                 final String updateCardResult =
                                     await model.updateCard(updateCard);
                                 // ローディング終了
