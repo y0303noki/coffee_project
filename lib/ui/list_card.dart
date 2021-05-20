@@ -23,7 +23,7 @@ class ListCard extends StatelessWidget {
   final int _score;
   // 端末内の画像のアドレス
   final File _imageFile;
-  final String _userImageId;
+  String _userImageId;
   // True:追加or編集画面 False:リスト画面
   final bool _isAddOrUpdateCard;
 
@@ -57,6 +57,11 @@ class ListCard extends StatelessWidget {
   // addCardとlistCardで表示する方法が違う
   Widget switchImage() {
     if (_isAddOrUpdateCard) {
+      // _userImageIdをnullにしないといけない
+      if (_imageFile != null) {
+        _userImageId = null;
+      }
+
       // 編集画面
       if (_userImageId != null) {
         return _coffeeImage(_userImageId);

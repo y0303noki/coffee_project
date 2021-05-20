@@ -7,13 +7,36 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class AlbumPage extends StatelessWidget {
+  bool _isAddorUpdatePage;
+  AlbumPage(this._isAddorUpdatePage);
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<CardModel>(
       create: (_) => CardModel(),
       child: Consumer<CardModel>(
         builder: (context, model, child) {
-          return _buildBody(context);
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _isAddorUpdatePage
+                  ? Padding(
+                      padding: const EdgeInsets.fromLTRB(5, 50, 0, 0),
+                      child: Row(
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('閉じる'),
+                          )
+                        ],
+                      ),
+                    )
+                  : Container(),
+              _buildBody(context),
+            ],
+          );
+          // return _buildBody(context);
         },
       ),
     );
@@ -31,6 +54,28 @@ class AlbumPage extends StatelessWidget {
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+    if (snapshot.isEmpty) {
+      return Center(
+        child: Container(
+          width: 300,
+          height: 100,
+          decoration: BoxDecoration(
+            color: Colors.lime,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Center(
+            child: Text(
+              '画像を追加するとここに表示されます',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     // DBから取得した値を変換
     List<UserImage> userImageList = [];
     for (DocumentSnapshot snap in snapshot) {

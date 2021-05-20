@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:coffee_project/model/coffee_card.dart';
+import 'package:coffee_project/ui/album_page.dart';
 import 'package:coffee_project/ui/list_card.dart';
 import 'package:coffee_project/view_model/card_model.dart';
 import 'package:flutter/material.dart';
@@ -174,6 +175,21 @@ class AddOrEditCardPage extends StatelessWidget {
                                   model.showImagePicker();
                                   _imageFile = model.imageFile;
                                   model.refresh();
+                                },
+                              ),
+                              Icon(Icons.photo_album),
+                              TextButton(
+                                child: Text('アルバム'),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AlbumPage(true),
+                                      fullscreenDialog: true,
+                                    ),
+                                  ).then((value) {});
+                                  // _imageFile = model.imageFile;
+                                  // model.refresh();
                                 },
                               ),
                               Icon(Icons.broken_image_rounded),
