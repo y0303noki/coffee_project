@@ -55,21 +55,24 @@ class AlbumPage extends StatelessWidget {
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     if (snapshot.isEmpty) {
-      return Center(
-        child: Container(
-          width: 300,
-          height: 100,
-          decoration: BoxDecoration(
-            color: Colors.lime,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Center(
-            child: Text(
-              '画像を追加するとここに表示されます',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-                color: Theme.of(context).primaryColor,
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+        child: Center(
+          child: Container(
+            width: 300,
+            height: 100,
+            decoration: BoxDecoration(
+              color: Colors.lime,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
+              child: Text(
+                '画像を追加するとここに表示されます',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
             ),
           ),
