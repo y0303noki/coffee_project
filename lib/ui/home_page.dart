@@ -16,7 +16,7 @@ class HomePage extends StatelessWidget {
     int _bottomIndex = 0;
     final _pageWidgets = [
       ListCardPage(),
-      AlbumPage(),
+      AlbumPage(false),
     ];
 
     final _floatingActionButtons = [
@@ -81,11 +81,11 @@ class HomePage extends StatelessWidget {
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                label: 'List',
+                label: 'ホーム',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.school),
-                label: 'Album',
+                icon: Icon(Icons.photo_album),
+                label: 'アルバム',
               ),
             ],
             currentIndex: _bottomIndex,

@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:coffee_project/model/coffee_card.dart';
+import 'package:coffee_project/ui/album_page.dart';
 import 'package:coffee_project/ui/list_card.dart';
 import 'package:coffee_project/view_model/card_model.dart';
 import 'package:flutter/material.dart';
@@ -124,7 +125,7 @@ class AddOrEditCardPage extends StatelessWidget {
                                   },
                                 ),
                                 // スコア
-                                Text('スコア'),
+                                Text('おすすめ'),
                                 RatingBar.builder(
                                   initialRating: _score.toDouble(),
                                   minRating: 1,
@@ -169,14 +170,37 @@ class AddOrEditCardPage extends StatelessWidget {
                             children: [
                               Icon(Icons.image_rounded),
                               TextButton(
-                                child: Text('画像変更'),
+                                child: Text('カメラロール'),
                                 onPressed: () {
                                   model.showImagePicker();
                                   _imageFile = model.imageFile;
                                   model.refresh();
                                 },
                               ),
-                              Icon(Icons.broken_image_rounded),
+                              Icon(Icons.photo_album),
+                              TextButton(
+                                child: Text('アルバム'),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AlbumPage(true),
+                                      fullscreenDialog: true,
+                                    ),
+                                  ).then((value) {
+                                    // userImageIdが返ってくる
+                                    // 閉じるボタンで閉じた時はuserImageIdがnullなので更新しない
+                                    if (value != null) {
+                                      _userImageId = value;
+                                    }
+
+                                    model.refresh();
+                                  });
+                                  // _imageFile = model.imageFile;
+                                  // model.refresh();
+                                },
+                              ),
+                              Icon(Icons.broken_image),
                               TextButton(
                                 child: Text('画像リセット'),
                                 onPressed: () {

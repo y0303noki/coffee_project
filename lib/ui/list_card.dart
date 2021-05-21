@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coffee_project/model/userImage.dart';
 import 'package:coffee_project/ui/add_or_edit_card_page.dart';
 import 'package:coffee_project/ui/album_detail_page.dart';
+import 'package:coffee_project/ui/list_card_page.dart';
 import 'package:coffee_project/utils/date_utility.dart';
 import 'package:coffee_project/view_model/card_model.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'dart:ui' as ui;
+
+import 'package:provider/provider.dart';
 
 class ListCard extends StatelessWidget {
   final String _id;
@@ -23,7 +26,7 @@ class ListCard extends StatelessWidget {
   final int _score;
   // 端末内の画像のアドレス
   final File _imageFile;
-  final String _userImageId;
+  String _userImageId;
   // True:追加or編集画面 False:リスト画面
   final bool _isAddOrUpdateCard;
 
@@ -57,6 +60,11 @@ class ListCard extends StatelessWidget {
   // addCardとlistCardで表示する方法が違う
   Widget switchImage() {
     if (_isAddOrUpdateCard) {
+      // _userImageIdをnullにしないといけない
+      if (_imageFile != null) {
+        _userImageId = null;
+      }
+
       // 編集画面
       if (_userImageId != null) {
         return _coffeeImage(_userImageId);
@@ -82,65 +90,68 @@ class ListCard extends StatelessWidget {
   }
 
   Widget _coffeeImage(String userImageId) {
-    return FutureBuilder(
-      // future属性で非同期処理を書く
-      future: CardModel().getUserInfo(userImageId),
-      // future: chatHelper.getUserInfo(ref.get()),
-      builder: (context, snapshot) {
-        // 取得完了するまで別のWidgetを表示する
-        if (userImageId != null) {
-          if (!snapshot.hasData) {
-            return Container(
-              color: Colors.grey,
-              width: 100,
-              height: 100,
-            );
+    return Consumer<CardModel>(builder: (context, model, child) {
+      return FutureBuilder(
+        // future属性で非同期処理を書く
+        future: model.getUserInfo(userImageId),
+        // future: chatHelper.getUserInfo(ref.get()),
+        builder: (context, snapshot) {
+          // 取得完了するまで別のWidgetを表示する
+          if (userImageId != null) {
+            if (!snapshot.hasData) {
+              return Container(
+                color: Colors.grey,
+                width: 100,
+                height: 100,
+              );
+            }
           }
-        }
 
-        if (snapshot.connectionState == ConnectionState.done) {
-          Map<String, dynamic> userImageData = snapshot.data.data();
-          String imageUrl = null;
-          if (userImageData != null) {
-            imageUrl = userImageData['imageUrl'];
-            return GestureDetector(
-              onTap: _isAddOrUpdateCard
-                  ? null
-                  : () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              AlbumDetailPage(userImageId, imageUrl),
-                          fullscreenDialog: true,
-                        ),
-                      ).then((value) {
-                        if (value is SnackBar) {
-                          // 保存が完了したら画面下部に完了メッセージを出す
-                          ScaffoldMessenger.of(context).showSnackBar(value);
-                        }
-                      });
-                    },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: Image.network(
-                  imageUrl,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
+          if (snapshot.connectionState == ConnectionState.done) {
+            Map<String, dynamic> userImageData = snapshot.data.data();
+            String imageUrl = null;
+            if (userImageData != null) {
+              imageUrl = userImageData['imageUrl'];
+              return GestureDetector(
+                onTap: _isAddOrUpdateCard
+                    ? null
+                    : () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                AlbumDetailPage(userImageId, imageUrl),
+                            fullscreenDialog: true,
+                          ),
+                        ).then((value) {
+                          if (value is SnackBar) {
+                            // 保存が完了したら画面下部に完了メッセージを出す
+                            ScaffoldMessenger.of(context).showSnackBar(value);
+                            model.refresh();
+                          }
+                        });
+                      },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.network(
+                    imageUrl,
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-            );
+              );
+            }
           }
-        }
 
-        return Container(
-          width: 100,
-          height: 100,
-          child: Image.asset('asset/images/coffeeSample.png'),
-        );
-      },
-    );
+          return Container(
+            width: 100,
+            height: 100,
+            child: Image.asset('asset/images/coffeeSample.png'),
+          );
+        },
+      );
+    });
   }
 
   // Widgetをimageに変換してByteDataを返す
