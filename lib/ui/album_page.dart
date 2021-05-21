@@ -107,18 +107,23 @@ class AlbumPage extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AlbumDetailPage(imageId, imageUrl),
-                  fullscreenDialog: true,
-                ),
-              ).then((value) {
-                if (value is SnackBar) {
-                  // 保存が完了したら画面下部に完了メッセージを出す
-                  ScaffoldMessenger.of(context).showSnackBar(value);
-                }
-              });
+              if (_isAddorUpdatePage) {
+                // アルバムから設定
+                Navigator.of(context).pop(imageId);
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AlbumDetailPage(imageId, imageUrl),
+                    fullscreenDialog: true,
+                  ),
+                ).then((value) {
+                  if (value is SnackBar) {
+                    // 保存が完了したら画面下部に完了メッセージを出す
+                    ScaffoldMessenger.of(context).showSnackBar(value);
+                  }
+                });
+              }
             },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),

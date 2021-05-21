@@ -125,7 +125,7 @@ class AddOrEditCardPage extends StatelessWidget {
                                   },
                                 ),
                                 // スコア
-                                Text('スコア'),
+                                Text('おすすめ'),
                                 RatingBar.builder(
                                   initialRating: _score.toDouble(),
                                   minRating: 1,
@@ -170,7 +170,7 @@ class AddOrEditCardPage extends StatelessWidget {
                             children: [
                               Icon(Icons.image_rounded),
                               TextButton(
-                                child: Text('画像変更'),
+                                child: Text('カメラロール'),
                                 onPressed: () {
                                   model.showImagePicker();
                                   _imageFile = model.imageFile;
@@ -187,12 +187,20 @@ class AddOrEditCardPage extends StatelessWidget {
                                       builder: (context) => AlbumPage(true),
                                       fullscreenDialog: true,
                                     ),
-                                  ).then((value) {});
+                                  ).then((value) {
+                                    // userImageIdが返ってくる
+                                    // 閉じるボタンで閉じた時はuserImageIdがnullなので更新しない
+                                    if (value != null) {
+                                      _userImageId = value;
+                                    }
+
+                                    model.refresh();
+                                  });
                                   // _imageFile = model.imageFile;
                                   // model.refresh();
                                 },
                               ),
-                              Icon(Icons.broken_image_rounded),
+                              Icon(Icons.broken_image),
                               TextButton(
                                 child: Text('画像リセット'),
                                 onPressed: () {
