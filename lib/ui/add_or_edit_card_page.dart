@@ -225,6 +225,7 @@ class AddOrEditCardPage extends StatelessWidget {
                                     score: _score,
                                     memo: _memo,
                                     isPublic: _isPublic,
+                                    userImageId: _userImageId,
                                     updatedAt: now,
                                     createdAt: now);
                                 await model.addCard(addCard);

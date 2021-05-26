@@ -177,15 +177,9 @@ class ListCard extends StatelessWidget {
   Widget cardWidget(String dateStr, BuildContext context, ListCard listCard) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.green[100],
+        // color: Colors.brown[100],
+        color: Colors.grey.withOpacity(0.5),
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          const BoxShadow(
-            color: Color(0x80000000),
-            offset: Offset(0, 4),
-            blurRadius: 6,
-          )
-        ],
       ),
       child: Material(
         color: Colors.transparent,

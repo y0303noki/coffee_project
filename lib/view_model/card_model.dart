@@ -91,27 +91,25 @@ class CardModel extends ChangeNotifier {
     Map<String, dynamic> addObject = new Map<String, dynamic>();
     String userId = LoginModel().user.uid;
 
-    // user_imagesのidとstorageのid
-    final String uuId = Uuid().v4();
+    String userImageId = addCoffeeCard.userImageId ?? Uuid().v4();
 
     addObject['userId'] = userId;
     addObject['name'] = addCoffeeCard.name;
     addObject['score'] = addCoffeeCard.score;
     addObject['memo'] = addCoffeeCard.memo;
     addObject['isPublic'] = addCoffeeCard.isPublic;
-    addObject['userImageId'] = uuId;
-    // addObject['imageUrl'] = imageUrl;
+    addObject['userImageId'] = userImageId;
     addObject['coffeeAt'] = addCoffeeCard.createdAt; // 作成日時と同じにしておく
     addObject['createdAt'] = addCoffeeCard.createdAt;
     addObject['updatedAt'] = addCoffeeCard.updatedAt;
     addObject['isDeleted'] = false;
     addObject['deletedAt'] = null;
 
-    String imageUrl = await uploadImageUrl(addCoffeeCard, uuId);
+    String imageUrl = await uploadImageUrl(addCoffeeCard, userImageId);
     // 画像アップロード
     if (imageFile != null) {
       try {
-        await addUserImageUrl(imageUrl, uuId);
+        await addUserImageUrl(imageUrl, userImageId);
       } catch (e) {
         // 画像アップロードエラー
         print(e);
