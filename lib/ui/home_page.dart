@@ -83,6 +83,7 @@ class HomePage extends StatelessWidget {
               : null,
           // フッター とりあえず不要そうなのでコメントアウト
           bottomNavigationBar: BottomNavigationBar(
+            backgroundColor: Colors.white,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coffee_project/model/userImage.dart';
 import 'package:coffee_project/ui/album_detail_page.dart';
+import 'package:coffee_project/utils/date_utility.dart';
 import 'package:coffee_project/view_model/card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -91,7 +92,10 @@ class AlbumPage extends StatelessWidget {
     List<Widget> userImageWidget = [];
     for (UserImage userImage in userImageList) {
       userImageWidget.add(
-        _photoItem(context, userImage.id, userImage.imageUrl),
+        _photoItem(
+          context,
+          userImage,
+        ),
       );
     }
 
@@ -103,7 +107,8 @@ class AlbumPage extends StatelessWidget {
     );
   }
 
-  Widget _photoItem(BuildContext context, String imageId, String imageUrl) {
+  Widget _photoItem(BuildContext context, UserImage userImage) {
+    String createdAtStr = DateUtility(userImage.createdAt).toDateFormatted();
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Stack(
@@ -112,12 +117,13 @@ class AlbumPage extends StatelessWidget {
             onTap: () {
               if (_isAddorUpdatePage) {
                 // アルバムから設定
-                Navigator.of(context).pop(imageId);
+                Navigator.of(context).pop(userImage.id);
               } else {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AlbumDetailPage(imageId, imageUrl),
+                    builder: (context) =>
+                        AlbumDetailPage(userImage.id, userImage.imageUrl),
                     fullscreenDialog: true,
                   ),
                 ).then((value) {
@@ -131,10 +137,36 @@ class AlbumPage extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
               child: Image.network(
-                imageUrl,
+                userImage.imageUrl,
                 width: 200,
                 height: 200,
                 fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // アルバム写真上の日付
+          Container(
+            alignment: Alignment.center,
+            height: 80,
+            width: 90,
+            child: Container(
+              alignment: Alignment.center,
+              height: 30,
+              width: 90,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.8),
+                border: Border(),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(50),
+                  bottomRight: Radius.circular(50),
+                ),
+              ),
+              child: Text(
+                '$createdAtStr',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.black,
+                ),
               ),
             ),
           ),
