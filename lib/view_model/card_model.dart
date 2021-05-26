@@ -91,6 +91,7 @@ class CardModel extends ChangeNotifier {
     Map<String, dynamic> addObject = new Map<String, dynamic>();
     String userId = LoginModel().user.uid;
 
+    // アルバムから画像を選択された場合はaddCoffeeCardにuserImageIdが設定されている
     String userImageId = addCoffeeCard.userImageId ?? Uuid().v4();
 
     addObject['userId'] = userId;
