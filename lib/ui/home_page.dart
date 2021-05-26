@@ -72,7 +72,12 @@ class HomePage extends StatelessWidget {
               ),
             ],
           ),
-          body: _pageWidgets.elementAt(_bottomIndex),
+          body: Stack(
+            children: [
+              _pageWidgets.elementAt(_bottomIndex),
+            ],
+          ),
+          // body: _pageWidgets.elementAt(_bottomIndex),
           floatingActionButton: _bottomIndex == 0
               ? _floatingActionButtons.elementAt(_bottomIndex)
               : null,

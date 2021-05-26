@@ -107,9 +107,12 @@ class AddOrEditCardPage extends StatelessWidget {
                                     hintText: '何飲んだ？',
                                   ),
                                   onChanged: (text) {
-                                    // TODO: ここで取得したtextを使う
-                                    _name = text;
-                                    model.refresh();
+                                    if (text != null && text.length > 20) {
+                                      print('20文字超えたらもう無理!');
+                                    } else {
+                                      _name = text;
+                                      model.refresh();
+                                    }
                                   },
                                 ),
                                 TextField(
@@ -119,9 +122,12 @@ class AddOrEditCardPage extends StatelessWidget {
                                     hintText: 'メモ？',
                                   ),
                                   onChanged: (text) {
-                                    // TODO: ここで取得したtextを使う
-                                    _memo = text;
-                                    model.refresh();
+                                    if (text != null && text.length > 20) {
+                                      print('20文字超えたらもう無理!');
+                                    } else {
+                                      _memo = text;
+                                      model.refresh();
+                                    }
                                   },
                                 ),
                                 // スコア
@@ -228,7 +234,12 @@ class AddOrEditCardPage extends StatelessWidget {
                                     userImageId: _userImageId,
                                     updatedAt: now,
                                     createdAt: now);
-                                await model.addCard(addCard);
+                                String addCardResult =
+                                    await model.addCard(addCard);
+                                if (addCardResult ==
+                                    CardModel().validation_error) {
+                                  print('バリテーションエラー');
+                                }
                                 // ローディング終了
                                 model.endLoading();
 

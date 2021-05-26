@@ -15,6 +15,10 @@ class CardModel extends ChangeNotifier {
   // プレミアムプラン MAX100件
   static const premiumLimit = 100;
 
+  // バリテーションエラー
+  static const String _validation_error = 'ValidationError';
+  get validation_error => _validation_error;
+
   int bottomIndex = 0;
   File imageFile;
   bool isLoading = false;
@@ -86,7 +90,22 @@ class CardModel extends ChangeNotifier {
   }
 
   Future<String> addCard(CoffeeCard addCoffeeCard) async {
-    // isLoading = true;
+    // 名前のバリテーション
+    if (addCoffeeCard.name == null ||
+        addCoffeeCard.name.isEmpty ||
+        addCoffeeCard.name.length >= 20) {
+      return validation_error;
+    }
+    // ひとことのバリテーション
+    if (addCoffeeCard.memo != null && addCoffeeCard.memo.length >= 20) {
+      return validation_error;
+    }
+    // おすすめのバリテーション
+    if (addCoffeeCard.score == null ||
+        addCoffeeCard.score < 0 ||
+        addCoffeeCard.score > 5) {
+      return validation_error;
+    }
     // ドキュメント作成
     Map<String, dynamic> addObject = new Map<String, dynamic>();
     String userId = LoginModel().user.uid;
@@ -199,6 +218,22 @@ class CardModel extends ChangeNotifier {
   }
 
   Future<String> updateCard(CoffeeCard updateCard) async {
+    // 名前のバリテーション
+    if (updateCard.name == null ||
+        updateCard.name.isEmpty ||
+        updateCard.name.length >= 20) {
+      return validation_error;
+    }
+    // ひとことのバリテーション
+    if (updateCard.memo != null && updateCard.memo.length >= 20) {
+      return validation_error;
+    }
+    // おすすめのバリテーション
+    if (updateCard.score == null ||
+        updateCard.score < 0 ||
+        updateCard.score > 5) {
+      return validation_error;
+    }
     // ドキュメント更新
     Map<String, dynamic> updateData = await _setUpdateCard(updateCard);
     final String docId = updateCard.id;

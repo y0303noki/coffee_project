@@ -40,9 +40,40 @@ class ListCard extends StatelessWidget {
   String get userImageId => _userImageId;
 
   GlobalKey _globalKey = GlobalKey();
+  double _nameFontSize = 1;
+  double _memoFontSize = 1;
 
-  ListCard(this._id, this._name, this._coffeeDate, this._memo, this._isPublic,
-      this._score, this._imageFile, this._userImageId, this._isAddOrUpdateCard);
+  ListCard(
+      this._id,
+      this._name,
+      this._coffeeDate,
+      this._memo,
+      this._isPublic,
+      this._score,
+      this._imageFile,
+      this._userImageId,
+      this._isAddOrUpdateCard) {
+    // フォントサイズ設定
+    if (this._name.length < 10) {
+      _nameFontSize = 26;
+    } else if (this._name.length >= 10 && this._name.length < 13) {
+      _nameFontSize = 23;
+    } else if (this._name.length >= 13 && this._name.length < 15) {
+      _nameFontSize = 20;
+    } else {
+      _nameFontSize = 15;
+    }
+
+    if (this._memo.length < 10) {
+      _memoFontSize = 20;
+    } else if (this._memo.length >= 10 && this._memo.length < 13) {
+      _memoFontSize = 16;
+    } else if (this._memo.length >= 13 && this._memo.length < 15) {
+      _memoFontSize = 13;
+    } else {
+      _memoFontSize = 10;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -217,11 +248,11 @@ class ListCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  SizedBox(height: 10),
+                  // SizedBox(height: 10),
                   Text(
                     '$_name',
                     style: TextStyle(
-                      fontSize: 26,
+                      fontSize: _nameFontSize,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xff333333),
                     ),
@@ -235,7 +266,7 @@ class ListCard extends StatelessWidget {
                   Text(
                     '$_memo',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: _memoFontSize,
                       fontWeight: FontWeight.normal,
                       color: const Color(0xff333333),
                     ),
