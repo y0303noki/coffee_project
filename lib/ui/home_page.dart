@@ -43,8 +43,11 @@ class HomePage extends StatelessWidget {
             }
           });
         },
-        child: const Icon(Icons.add),
-        backgroundColor: Colors.green,
+        child: Container(
+          width: 50,
+          child: Image.asset('asset/images/coffeePlusToukaIcon.png'),
+        ),
+        backgroundColor: Colors.brown,
       ),
       FloatingActionButton(
         onPressed: () {

@@ -108,6 +108,7 @@ class AddOrEditCardPage extends StatelessWidget {
                                 TextField(
                                   controller: _nameTextEditController,
                                   decoration: InputDecoration(
+                                    labelStyle: TextStyle(color: Colors.black),
                                     labelText: '名前',
                                     hintText: '何飲んだ？',
                                   ),
@@ -123,8 +124,9 @@ class AddOrEditCardPage extends StatelessWidget {
                                 TextField(
                                   controller: _memoTextEditingController,
                                   decoration: InputDecoration(
+                                    labelStyle: TextStyle(color: Colors.black),
                                     labelText: 'ひとこと',
-                                    hintText: 'メモ？',
+                                    hintText: 'メモ',
                                   ),
                                   onChanged: (text) {
                                     if (text != null && text.length > 20) {
@@ -136,25 +138,44 @@ class AddOrEditCardPage extends StatelessWidget {
                                   },
                                 ),
                                 // スコア
-                                Text('おすすめ'),
-                                RatingBar.builder(
-                                  initialRating: _score.toDouble(),
-                                  minRating: 1,
-                                  itemSize: 30,
-                                  direction: Axis.horizontal,
-                                  allowHalfRating: false,
-                                  itemCount: 5,
-                                  itemPadding:
-                                      EdgeInsets.symmetric(horizontal: 4.0),
-                                  itemBuilder: (context, _) => Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                  ),
-                                  onRatingUpdate: (rating) {
-                                    _score = rating.toInt();
-                                    model.refresh();
-                                  },
+                                Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                          child: Text(
+                                            'おすすめ',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    RatingBar.builder(
+                                      initialRating: _score.toDouble(),
+                                      minRating: 1,
+                                      itemSize: 30,
+                                      direction: Axis.horizontal,
+                                      allowHalfRating: false,
+                                      itemCount: 5,
+                                      itemPadding:
+                                          EdgeInsets.symmetric(horizontal: 4.0),
+                                      itemBuilder: (context, _) => Icon(
+                                        Icons.star,
+                                        color: Colors.amber,
+                                      ),
+                                      onRatingUpdate: (rating) {
+                                        _score = rating.toInt();
+                                        model.refresh();
+                                      },
+                                    ),
+                                  ],
                                 ),
+
                                 // 公開設定、まだ使わない
                                 // SwitchListTile(
                                 //   value: _isPublic,
