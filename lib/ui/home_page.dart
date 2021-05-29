@@ -17,6 +17,13 @@ class HomePage extends StatelessWidget {
     final _pageWidgets = [
       ListCardPage(),
       AlbumPage(false),
+      SettingPage(),
+    ];
+
+    final _pageTitles = [
+      'ホーム',
+      'アルバム',
+      'マイページ',
     ];
 
     final _floatingActionButtons = [
@@ -52,25 +59,13 @@ class HomePage extends StatelessWidget {
       create: (_) => HomeModel(),
       child: Consumer<HomeModel>(builder: (context, model, child) {
         return Scaffold(
+          backgroundColor: Theme.of(context).backgroundColor,
           appBar: AppBar(
-            // title: Text('Coffee'),
-            actions: [
-              IconButton(
-                icon: Icon(
-                  Icons.settings,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SettingPage(),
-                      fullscreenDialog: true,
-                    ),
-                  );
-                },
-              ),
-            ],
+            backgroundColor: Theme.of(context).backgroundColor,
+            title: Text(
+              _pageTitles.elementAt(_bottomIndex),
+              style: Theme.of(context).textTheme.headline6,
+            ),
           ),
           body: Stack(
             children: [
@@ -83,7 +78,7 @@ class HomePage extends StatelessWidget {
               : null,
           // フッター とりあえず不要そうなのでコメントアウト
           bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).backgroundColor,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
@@ -92,6 +87,10 @@ class HomePage extends StatelessWidget {
               BottomNavigationBarItem(
                 icon: Icon(Icons.photo_album),
                 label: 'アルバム',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline),
+                label: 'マイページ',
               ),
             ],
             currentIndex: _bottomIndex,

@@ -208,8 +208,7 @@ class ListCard extends StatelessWidget {
   Widget cardWidget(String dateStr, BuildContext context, ListCard listCard) {
     return Container(
       decoration: BoxDecoration(
-        // color: Colors.brown[100],
-        color: Colors.grey.withOpacity(0.5),
+        color: Colors.brown.withOpacity(0.5),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Material(
@@ -254,13 +253,13 @@ class ListCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: _nameFontSize,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xff333333),
+                      color: Theme.of(context).textTheme.bodyText1.color,
                     ),
                   ),
                   Text(
                     '$dateStr',
                     style: TextStyle(
-                      color: Colors.grey,
+                      color: Theme.of(context).textTheme.bodyText1.color,
                     ),
                   ),
                   Text(
@@ -268,7 +267,7 @@ class ListCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: _memoFontSize,
                       fontWeight: FontWeight.normal,
-                      color: const Color(0xff333333),
+                      color: Theme.of(context).textTheme.bodyText1.color,
                     ),
                   ),
                   RatingBarIndicator(
@@ -302,8 +301,8 @@ class ListCard extends StatelessWidget {
                                   }
                                 });
                               },
-                        color: Colors.blue,
-                        icon: Icon(Icons.edit),
+                        color: Theme.of(context).textTheme.bodyText1.color,
+                        icon: Icon(Icons.edit_outlined),
                       ),
                       // SNSで共有ボタン
                       IconButton(
@@ -321,8 +320,8 @@ class ListCard extends StatelessWidget {
                                     'image/png',
                                     text: '今日の1杯を投稿しました！ #CoffeeProject');
                               },
-                        color: Colors.blue,
-                        icon: Icon(Icons.share),
+                        color: Theme.of(context).textTheme.bodyText1.color,
+                        icon: Icon(Icons.share_outlined),
                       ),
                     ],
                   ),

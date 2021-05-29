@@ -10,9 +10,10 @@ class SettingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('設定'),
-      ),
+      backgroundColor: Theme.of(context).backgroundColor,
+      // appBar: AppBar(
+      //   title: Text('設定'),
+      // ),
       body: ListView(children: [
         _openAccountPage("アカウント", Icon(Icons.person), context),
         _tutorialPage('チュートリアル', Icon(Icons.book), context),
