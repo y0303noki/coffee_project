@@ -1,3 +1,4 @@
+import 'package:coffee_project/model/user.dart';
 import 'package:coffee_project/view_model/login_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,16 @@ class AccountPage extends StatelessWidget {
 
   Widget _buildAccountInfo(BuildContext context) {
     final User _user = context.select((LoginModel _auth) => _auth.user);
+    final UserData _userInfo =
+        context.select((LoginModel _model) => _model.userData);
+    String userPlan = '';
+    if (_userInfo.status == 0) {
+      userPlan = 'スタンダード';
+    } else if (_userInfo.status == 1) {
+      userPlan = 'プレミアム';
+    } else {
+      userPlan = 'そのほか（エラー）';
+    }
 
     // ログアウト直後に _user を null にしており、_user.photoURLでエラーが出るため分岐させている
     return Column(children: [
@@ -41,6 +52,14 @@ class AccountPage extends StatelessWidget {
                 onTap: () {
                   _logout(context);
                 },
+              ),
+            )
+          : Container(),
+      _user != null
+          ? Card(
+              child: ListTile(
+                title: Text(userPlan),
+                subtitle: Text('email'),
               ),
             )
           : Container(),
