@@ -252,7 +252,7 @@ class AddOrEditCardPage extends StatelessWidget {
                                 // await _showSuccsessDialog(context);
 
                                 final SnackBar snackBar = SnackBar(
-                                  content: Text('投稿が完了しました！'),
+                                  content: Text('投稿が完了しました。'),
                                 );
 
                                 // 画面戻る
@@ -277,10 +277,13 @@ class AddOrEditCardPage extends StatelessWidget {
                                 // ローディング終了
                                 model.endLoading();
 
-                                await _showSuccsessDialog(context);
+                                // await _showSuccsessDialog(context);
+                                final SnackBar snackBar = SnackBar(
+                                  content: Text('更新が完了しました。'),
+                                );
 
                                 // 画面戻る
-                                Navigator.of(context).pop(null);
+                                Navigator.of(context).pop(snackBar);
                               },
                             ),
                         ],

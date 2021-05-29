@@ -32,21 +32,17 @@ class LoginPage extends StatelessWidget {
         children: [
           SignInButton(
             buttonType: ButtonType.apple,
-            onPressed: () {
-              print('click');
-            },
+            onPressed: () {},
           ),
           SignInButton(
             buttonType: ButtonType.google,
             onPressed: () async {
-              print('click');
               await context.read<LoginModel>().loginTypeTo('GOOGLE');
             },
           ),
           TextButton(
             child: const Text('匿名ログイン'),
             onPressed: () async {
-              print('匿名ログイン');
               await _login(context);
               await context.read<LoginModel>().loginTypeTo('ANONUMOUSLY');
             },
