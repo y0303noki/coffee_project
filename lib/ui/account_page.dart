@@ -26,7 +26,7 @@ class AccountPage extends StatelessWidget {
     final UserData _userInfo =
         context.select((LoginModel _model) => _model.userData);
     String userPlan = '';
-    if (_userInfo.status == 0) {
+    if (_userInfo == null || _userInfo.status == 0) {
       userPlan = 'スタンダード';
     } else if (_userInfo.status == 1) {
       userPlan = 'プレミアム';

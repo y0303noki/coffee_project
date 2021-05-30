@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coffee_project/model/coffee.dart';
 import 'package:coffee_project/model/coffee_card.dart';
+import 'package:coffee_project/service/my_coffee_data_service.dart';
 import 'package:coffee_project/view_model/login_model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,8 @@ class CardModel extends ChangeNotifier {
         .orderBy('updatedAt', descending: true)
         .limit(standardLimit)
         .snapshots();
+
+    // var a = MyCoffeeData().findMyAllCoffee();
     return coffeeCardList;
   }
 
