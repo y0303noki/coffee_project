@@ -42,6 +42,9 @@ class AddOrEditCardPage extends StatelessWidget {
   File _imageFile = null;
   String _userImageId = null;
 
+  // ボタンの活性/非活性
+  bool _isAddButtonDisabled = false;
+
   ListCard listCard;
 
   // Widgetをimageにするためのkey
@@ -85,6 +88,15 @@ class AddOrEditCardPage extends StatelessWidget {
             children: [
               Consumer<CardModel>(
                 builder: (context, model, child) {
+                  if (_name == null ||
+                      _name.isEmpty ||
+                      _name.length <= 0 ||
+                      _name.length >= 20) {
+                    _isAddButtonDisabled = true;
+                  } else {
+                    _isAddButtonDisabled = false;
+                  }
+
                   // 画像のファイルパスをセット
                   _imageFile = model.imageFile;
                   listCard = ListCard(_id, _name, postDate, _memo, _isPublic,
@@ -199,6 +211,7 @@ class AddOrEditCardPage extends StatelessWidget {
                             ),
                           ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Icon(Icons.image_rounded),
                               TextButton(
@@ -246,39 +259,41 @@ class AddOrEditCardPage extends StatelessWidget {
                           if (!isEdit)
                             TextButton(
                               child: Text('投稿する'),
-                              onPressed: () async {
-                                // ローディング開始
-                                model.startLoading();
+                              onPressed: _isAddButtonDisabled
+                                  ? null
+                                  : () async {
+                                      // ローディング開始
+                                      model.startLoading();
 
-                                _name = _name == '' ? 'nullでした' : _name;
-                                DateTime now = DateTime.now();
-                                CoffeeCard addCard = new CoffeeCard(
-                                    name: _name,
-                                    score: _score,
-                                    memo: _memo,
-                                    isPublic: _isPublic,
-                                    userImageId: _userImageId,
-                                    updatedAt: now,
-                                    createdAt: now);
-                                String addCardResult =
-                                    await model.addCard(addCard);
-                                if (addCardResult ==
-                                    CardModel().validation_error) {
-                                  print('バリテーションエラー');
-                                }
-                                // ローディング終了
-                                model.endLoading();
+                                      _name = _name == '' ? 'nullでした' : _name;
+                                      DateTime now = DateTime.now();
+                                      CoffeeCard addCard = new CoffeeCard(
+                                          name: _name,
+                                          score: _score,
+                                          memo: _memo,
+                                          isPublic: _isPublic,
+                                          userImageId: _userImageId,
+                                          updatedAt: now,
+                                          createdAt: now);
+                                      String addCardResult =
+                                          await model.addCard(addCard);
+                                      if (addCardResult ==
+                                          CardModel().validation_error) {
+                                        print('バリテーションエラー');
+                                      }
+                                      // ローディング終了
+                                      model.endLoading();
 
-                                // SNS投稿ダイアログ
-                                // await _showSuccsessDialog(context);
+                                      // SNS投稿ダイアログ
+                                      // await _showSuccsessDialog(context);
 
-                                final SnackBar snackBar = SnackBar(
-                                  content: Text('投稿が完了しました。'),
-                                );
+                                      final SnackBar snackBar = SnackBar(
+                                        content: Text('投稿が完了しました。'),
+                                      );
 
-                                // 画面戻る
-                                Navigator.of(context).pop(snackBar);
-                              },
+                                      // 画面戻る
+                                      Navigator.of(context).pop(snackBar);
+                                    },
                             ),
                           if (isEdit)
                             TextButton(
