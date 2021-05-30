@@ -24,6 +24,8 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.brown,
+          primaryIconTheme:
+              IconThemeData(color: Theme.of(context).textTheme.button.color),
         ),
         darkTheme: ThemeData.dark(),
         // home: HomePage(),

@@ -9,8 +9,13 @@ class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).canvasColor,
       appBar: AppBar(
-        title: Text('ログイン'),
+        backgroundColor: Theme.of(context).canvasColor,
+        title: Text(
+          'アカウント',
+          style: Theme.of(context).textTheme.headline6,
+        ),
       ),
       body: _buildAccountInfo(context),
     );

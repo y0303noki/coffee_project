@@ -10,10 +10,7 @@ class SettingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      // appBar: AppBar(
-      //   title: Text('設定'),
-      // ),
+      backgroundColor: Theme.of(context).canvasColor,
       body: ListView(children: [
         _openAccountPage("アカウント", Icon(Icons.person), context),
         _tutorialPage('チュートリアル', Icon(Icons.book), context),
@@ -23,7 +20,7 @@ class SettingPage extends StatelessWidget {
   }
 
   // 設定リストのcontainer
-  Container _settingContainer(String title, Icon icon) {
+  Container _settingContainer(BuildContext context, String title, Icon icon) {
     return Container(
       padding: EdgeInsets.all(8.0),
       decoration: new BoxDecoration(
@@ -40,7 +37,9 @@ class SettingPage extends StatelessWidget {
               ),
               Text(
                 title,
-                style: TextStyle(color: Colors.black, fontSize: 18.0),
+                style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyText1.color,
+                    fontSize: 18.0),
               ),
             ],
           ),
@@ -56,7 +55,7 @@ class SettingPage extends StatelessWidget {
   // アカウントページを開く
   Widget _openAccountPage(String title, Icon icon, BuildContext context) {
     return GestureDetector(
-      child: _settingContainer(title, icon),
+      child: _settingContainer(context, title, icon),
       onTap: () {
         Navigator.push(
           context,
@@ -72,7 +71,7 @@ class SettingPage extends StatelessWidget {
   // チュートリアル画面を開く
   Widget _tutorialPage(String title, Icon icon, BuildContext context) {
     return GestureDetector(
-      child: _settingContainer(title, icon),
+      child: _settingContainer(context, title, icon),
       onTap: () {
         Navigator.push(
           context,

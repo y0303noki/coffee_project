@@ -71,13 +71,13 @@ class AddOrEditCardPage extends StatelessWidget {
     return RepaintBoundary(
       key: _globalKey,
       child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).canvasColor,
         appBar: AppBar(
           title: Text(
             '投稿',
             style: Theme.of(context).textTheme.headline6,
           ),
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).canvasColor,
         ),
         body: ChangeNotifierProvider<CardModel>(
           create: (_) => CardModel(),

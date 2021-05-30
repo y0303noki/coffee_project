@@ -62,9 +62,9 @@ class HomePage extends StatelessWidget {
       create: (_) => HomeModel(),
       child: Consumer<HomeModel>(builder: (context, model, child) {
         return Scaffold(
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).canvasColor,
           appBar: AppBar(
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: Theme.of(context).canvasColor,
             title: Text(
               _pageTitles.elementAt(_bottomIndex),
               style: Theme.of(context).textTheme.headline6,
@@ -80,7 +80,7 @@ class HomePage extends StatelessWidget {
               : null,
           // フッター とりあえず不要そうなのでコメントアウト
           bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: Theme.of(context).canvasColor,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
