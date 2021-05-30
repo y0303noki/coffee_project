@@ -10,9 +10,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
 class CardModel extends ChangeNotifier {
-  // スタンダードプラン MAX5件
-  static const standardLimit = 5;
-  // プレミアムプラン MAX100件
+  // スタンダードプラン 20件
+  static const standardLimit = 20;
+  // プレミアムプラン 100件
   static const premiumLimit = 100;
 
   // バリテーションエラー
