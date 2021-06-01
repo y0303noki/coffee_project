@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         ),
         darkTheme: ThemeData.dark(),
         // home: HomePage(),
-        home: _LoginCheck(),
+        home: _LoginCheck2(),
         builder: (BuildContext context, Widget child) {
           /// make sure that loading can be displayed in front of all other widgets
           return FlutterEasyLoading(child: child);
@@ -39,12 +39,45 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// 新たに追加
-class _LoginCheck extends StatelessWidget {
+// // 新たに追加
+// class _LoginCheck extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     // ログイン状態に応じて、画面を切り替える
+//     bool _loggedIn = context.watch<LoginModel>().loggedIn;
+//     print('_loggedIn:$_loggedIn');
+//     if (!_loggedIn) {
+//       LoginModel().loginTypeTo('ANONUMOUSLY');
+//     }
+//     return HomePage();
+//     // return _loggedIn ? HomePage() : LoginPage();
+//   }
+// }
+
+class _LoginCheck2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // ログイン状態に応じて、画面を切り替える
-    bool _loggedIn = context.watch<LoginModel>().loggedIn;
-    return _loggedIn ? HomePage() : LoginPage();
+    return FutureBuilder(
+      future: Provider.of<LoginModel>(context, listen: false)
+          .loginTypeTo('ANONUMOUSLY'),
+      builder: (ctx, dataSnapshot) {
+        if (dataSnapshot.connectionState == ConnectionState.waiting) {
+          // 非同期処理未完了 = 通信中
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        if (dataSnapshot.error != null) {
+          // エラー
+          return Center(
+            child: Text('エラーがおきました'),
+          );
+        }
+
+        // 成功処理
+        return HomePage();
+      },
+    );
   }
 }
