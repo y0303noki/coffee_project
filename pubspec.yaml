@@ -1,7 +1,7 @@
 name: coffee_project
 description: A new Flutter project.
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
@@ -24,9 +24,9 @@ dependencies:
   firebase_storage: ^8.0.5
   esys_flutter_share: ^1.0.2
   uuid: ^3.0.4
+  flappy_search_bar: ^1.7.2
   flutter_localizations:
     sdk: flutter
-
 
   cupertino_icons: ^1.0.0
 
@@ -35,9 +35,7 @@ dev_dependencies:
     sdk: flutter
 
 flutter:
-
   uses-material-design: true
   assets:
     - asset/images/
     - asset/
-

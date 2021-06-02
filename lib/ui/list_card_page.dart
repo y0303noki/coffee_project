@@ -8,6 +8,7 @@ import 'package:coffee_project/view_model/home_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:flappy_search_bar/flappy_search_bar.dart';
 
 class ListCardPage extends StatelessWidget {
   @override
@@ -22,37 +23,23 @@ class ListCardPage extends StatelessWidget {
           return Column(
             children: [
               // bodyの上部に検索欄などの機能
-              Row(
-                children: [
-                  // Container(
-                  //   child: DropdownButton<String>(
-                  //     value: _selectedItem,
-                  //     onChanged: (String newValue) {
-                  //       _selectedItem = newValue;
-                  //       model.refresh();
-                  //     },
-                  //     selectedItemBuilder: (context) {
-                  //       return _items.map((String item) {
-                  //         return Text(
-                  //           item,
-                  //           style: TextStyle(color: Colors.pink),
-                  //         );
-                  //       }).toList();
-                  //     },
-                  //     items: _items.map((String item) {
-                  //       return DropdownMenuItem(
-                  //         value: item,
-                  //         child: Text(
-                  //           item,
-                  //           style: item == _selectedItem
-                  //               ? TextStyle(fontWeight: FontWeight.bold)
-                  //               : TextStyle(fontWeight: FontWeight.normal),
-                  //         ),
-                  //       );
-                  //     }).toList(),
-                  //   ),
-                  // ),
-                ],
+              // buildFloatingSearchBar(context),
+              Padding(
+                padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                child: TextField(
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search, color: Colors.black),
+                    hintText: "キーワード検索",
+                  ),
+                  onSubmitted: (term) {
+                    // キーボードの検索ボタンを押した時の処理
+                    print('DONE!');
+                    if (term.isNotEmpty) {
+                      model.searchKeyword = term;
+                    }
+                  },
+                ),
               ),
               Expanded(child: _buildBody(context)),
             ],
