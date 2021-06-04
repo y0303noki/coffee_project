@@ -11,6 +11,8 @@ import 'package:provider/provider.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 
 class ListCardPage extends StatelessWidget {
+  String _searchKeyWord = '';
+
   @override
   Widget build(BuildContext context) {
     List<String> _items = ["A", "B", "C"];
@@ -36,7 +38,11 @@ class ListCardPage extends StatelessWidget {
                     // キーボードの検索ボタンを押した時の処理
                     print('DONE!');
                     if (term.isNotEmpty) {
-                      model.searchKeyword = term;
+                      _searchKeyWord = term;
+                      model.notifyListeners();
+                    } else {
+                      _searchKeyWord = '';
+                      model.notifyListeners();
                     }
                   },
                 ),
@@ -68,15 +74,22 @@ class ListCardPage extends StatelessWidget {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final test = Coffee.fromSnapshot(data);
-    final String userImageId = test.userImageId;
+    final coffee = Coffee.fromSnapshot(data);
+    // キーワード検索
+    if (_searchKeyWord.isNotEmpty) {
+      String _lowerName = coffee.name.toLowerCase();
+      if (!_isContainKeyword(_lowerName, _searchKeyWord)) {
+        return Container();
+      }
+    }
+    final String userImageId = coffee.userImageId;
 
     return Padding(
-      key: ValueKey(test.name),
+      key: ValueKey(coffee.id),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
-        child: ListCard(test.id, test.name, test.coffeeAt, test.memo,
-            test.isPublic, test.score, null, userImageId, false),
+        child: ListCard(coffee.id, coffee.name, coffee.coffeeAt, coffee.memo,
+            coffee.isPublic, coffee.score, null, userImageId, false),
       ),
     );
   }
@@ -111,5 +124,13 @@ class ListCardPage extends StatelessWidget {
         print('No!!!');
         break;
     }
+  }
+
+  // キーワード検索
+  bool _isContainKeyword(
+    String target,
+    String query,
+  ) {
+    return target.contains(query);
   }
 }
