@@ -36,9 +36,9 @@ class ListCardPage extends StatelessWidget {
                   ),
                   onSubmitted: (term) {
                     // キーボードの検索ボタンを押した時の処理
-                    print('DONE!');
+                    String _termTrimed = term.trim();
                     if (term.isNotEmpty) {
-                      _searchKeyWord = term;
+                      _searchKeyWord = _termTrimed;
                       model.notifyListeners();
                     } else {
                       _searchKeyWord = '';
