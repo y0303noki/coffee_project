@@ -8,8 +8,11 @@ import 'package:coffee_project/view_model/home_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:flappy_search_bar/flappy_search_bar.dart';
 
 class ListCardPage extends StatelessWidget {
+  String _searchKeyWord = '';
+
   @override
   Widget build(BuildContext context) {
     List<String> _items = ["A", "B", "C"];
@@ -22,37 +25,27 @@ class ListCardPage extends StatelessWidget {
           return Column(
             children: [
               // bodyの上部に検索欄などの機能
-              Row(
-                children: [
-                  // Container(
-                  //   child: DropdownButton<String>(
-                  //     value: _selectedItem,
-                  //     onChanged: (String newValue) {
-                  //       _selectedItem = newValue;
-                  //       model.refresh();
-                  //     },
-                  //     selectedItemBuilder: (context) {
-                  //       return _items.map((String item) {
-                  //         return Text(
-                  //           item,
-                  //           style: TextStyle(color: Colors.pink),
-                  //         );
-                  //       }).toList();
-                  //     },
-                  //     items: _items.map((String item) {
-                  //       return DropdownMenuItem(
-                  //         value: item,
-                  //         child: Text(
-                  //           item,
-                  //           style: item == _selectedItem
-                  //               ? TextStyle(fontWeight: FontWeight.bold)
-                  //               : TextStyle(fontWeight: FontWeight.normal),
-                  //         ),
-                  //       );
-                  //     }).toList(),
-                  //   ),
-                  // ),
-                ],
+              // buildFloatingSearchBar(context),
+              Padding(
+                padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                child: TextField(
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search, color: Colors.black),
+                    hintText: "キーワード検索",
+                  ),
+                  onSubmitted: (term) {
+                    // キーボードの検索ボタンを押した時の処理
+                    String _termTrimed = term.trim();
+                    if (term.isNotEmpty) {
+                      _searchKeyWord = _termTrimed;
+                      model.notifyListeners();
+                    } else {
+                      _searchKeyWord = '';
+                      model.notifyListeners();
+                    }
+                  },
+                ),
               ),
               Expanded(child: _buildBody(context)),
             ],
@@ -81,15 +74,22 @@ class ListCardPage extends StatelessWidget {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final test = Coffee.fromSnapshot(data);
-    final String userImageId = test.userImageId;
+    final coffee = Coffee.fromSnapshot(data);
+    // キーワード検索
+    if (_searchKeyWord.isNotEmpty) {
+      String _lowerName = coffee.name.toLowerCase();
+      if (!_isContainKeyword(_lowerName, _searchKeyWord)) {
+        return Container();
+      }
+    }
+    final String userImageId = coffee.userImageId;
 
     return Padding(
-      key: ValueKey(test.name),
+      key: ValueKey(coffee.id),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
-        child: ListCard(test.id, test.name, test.coffeeAt, test.memo,
-            test.isPublic, test.score, null, userImageId, false),
+        child: ListCard(coffee.id, coffee.name, coffee.coffeeAt, coffee.memo,
+            coffee.isPublic, coffee.score, null, userImageId, false),
       ),
     );
   }
@@ -124,5 +124,13 @@ class ListCardPage extends StatelessWidget {
         print('No!!!');
         break;
     }
+  }
+
+  // キーワード検索
+  bool _isContainKeyword(
+    String target,
+    String query,
+  ) {
+    return target.contains(query);
   }
 }

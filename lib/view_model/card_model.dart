@@ -22,6 +22,7 @@ class CardModel extends ChangeNotifier {
   int bottomIndex = 0;
   File imageFile;
   bool isLoading = false;
+  String searchKeyword = '';
 
   startLoading() {
     isLoading = true;
