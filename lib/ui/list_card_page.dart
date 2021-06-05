@@ -8,7 +8,6 @@ import 'package:coffee_project/view_model/home_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:flappy_search_bar/flappy_search_bar.dart';
 
 class ListCardPage extends StatelessWidget {
   String _searchKeyWord = '';

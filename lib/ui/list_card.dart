@@ -210,12 +210,21 @@ class ListCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.brown.withOpacity(0.5),
         borderRadius: BorderRadius.circular(10),
+        // 影
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            spreadRadius: 1.0,
+            blurRadius: 10.0,
+            offset: Offset(10, 10),
+          ),
+        ],
       ),
       child: Material(
-        color: Colors.transparent,
+        color: Colors.white,
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
-          splashColor: Color(0x30f010f0),
+          // splashColor: Colors.white,
           // onTap: () => print('tap!'),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
