@@ -23,7 +23,7 @@ class HomePage extends StatelessWidget {
     final _pageTitles = [
       'ホーム',
       'アルバム',
-      'マイページ',
+      '設定',
     ];
 
     final _floatingActionButtons = [
@@ -83,16 +83,16 @@ class HomePage extends StatelessWidget {
             backgroundColor: Theme.of(context).canvasColor,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                icon: Icon(Icons.home),
+                icon: Icon(Icons.home_outlined),
                 label: 'ホーム',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.photo_album),
+                icon: Icon(Icons.photo_album_outlined),
                 label: 'アルバム',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.person_outline),
-                label: 'マイページ',
+                icon: Icon(Icons.settings_outlined),
+                label: '設定',
               ),
             ],
             currentIndex: _bottomIndex,
