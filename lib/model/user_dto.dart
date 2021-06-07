@@ -5,6 +5,7 @@ class UserDto {
   DateTime createdAt;
   DateTime updatedAt;
   bool isDeleted;
+  String notificationAt;
   UserDto({
     this.id,
     this.status,
@@ -12,5 +13,6 @@ class UserDto {
     this.createdAt,
     this.updatedAt,
     this.isDeleted,
+    this.notificationAt,
   });
 }

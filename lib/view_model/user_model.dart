@@ -23,6 +23,7 @@ class UserModel extends ChangeNotifier {
   String _userId = '';
   bool isLoading = false;
   int _status = -1;
+  DateTime _notiTime;
 
   get userId => _userId;
   set userId(String userId) {
@@ -32,6 +33,11 @@ class UserModel extends ChangeNotifier {
   get status => _status;
   set status(int status) {
     _status = status;
+  }
+
+  get notiTime => _notiTime;
+  set notiTime(DateTime notiTime) {
+    _notiTime = notiTime;
   }
 
   startLoading() {
@@ -51,6 +57,20 @@ class UserModel extends ChangeNotifier {
     final data = await userInfo.get();
 
     return data;
+  }
+
+  Stream<QuerySnapshot> findUserQuerySnapshot() {
+    // userIdは必ず指定する！
+    String userId = 'TEST';
+    if (LoginModel().user != null) {
+      userId = LoginModel().user.uid;
+    }
+    final userImage = FirebaseFirestore.instance
+        .collection(usersCollection)
+        .where('id', isEqualTo: userId)
+        .snapshots();
+
+    return userImage;
   }
 
   Future<DocumentSnapshot> addUser(UserDto userDto) async {
@@ -78,84 +98,41 @@ class UserModel extends ChangeNotifier {
     }
   }
 
-  // userとimageのコレクション 1:n
-  // コレクションに追加したらdocIdを返す
-  Future<String> addUserImageUrl(String imageUrl, String uuId) async {
-    // ドキュメント作成
-    DateTime now = DateTime.now();
-    Map<String, dynamic> addObject = new Map<String, dynamic>();
-    String userId = LoginModel().user.uid;
-    addObject['userId'] = userId;
-    addObject['imageUrl'] = imageUrl;
-    addObject['createdAt'] = now;
-    addObject['updatedAt'] = now;
-    addObject['isDeleted'] = false;
-    addObject['deletedAt'] = null;
-
-    try {
-      var result = FirebaseFirestore.instance
-          .collection('user_images')
-          .doc(uuId)
-          .set(addObject);
-
-      await _updateUserImageDocId(uuId);
-      return uuId;
-    } catch (e) {
-      isLoading = false;
-      return null;
-    }
-  }
-
   // 更新する情報をセットする
-  Future<Map<String, dynamic>> _setUpdateCard(CoffeeCard updateCard) async {
+  Future<Map<String, dynamic>> _setUpdateUser(UserDto userDto) async {
     Map<String, dynamic> result = {};
     DateTime now = DateTime.now();
     result['updatedAt'] = now;
 
-    if (updateCard.name != null) {
-      result['name'] = updateCard.name;
+    if (userDto.status >= 0) {
+      result['status'] = userDto.status;
     }
 
-    if (updateCard.memo != null) {
-      result['memo'] = updateCard.memo;
-    }
-
-    result['userImageId'] = updateCard.userImageId;
-
-    if (updateCard.score != null) {
-      result['score'] = updateCard.score;
+    if (userDto.googleId != null) {
+      result['googleId'] = userDto.googleId;
     }
 
     return result;
   }
 
-  Future<String> updateCard(CoffeeCard updateCard) async {
-    // 名前のバリテーション
-    if (updateCard.name == null ||
-        updateCard.name.isEmpty ||
-        updateCard.name.length >= 20) {
-      return validation_error;
-    }
-    // ひとことのバリテーション
-    if (updateCard.memo != null && updateCard.memo.length >= 20) {
-      return validation_error;
-    }
-    // おすすめのバリテーション
-    if (updateCard.score == null ||
-        updateCard.score < 0 ||
-        updateCard.score > 5) {
-      return validation_error;
-    }
+  // 更新する情報をセットする
+  Future<Map<String, dynamic>> _updateNotificationAt(UserDto userDto) async {
+    Map<String, dynamic> result = {};
+    result['notificationAt'] = userDto.notificationAt;
+    return result;
+  }
+
+  Future<String> updateUser(UserDto userDto) async {
     // ドキュメント更新
-    Map<String, dynamic> updateData = await _setUpdateCard(updateCard);
-    final String docId = updateCard.id;
+    Map<String, dynamic> updateData = await _setUpdateUser(userDto);
+    final String docId = userDto.id;
     if (docId == null) {
       return null;
     }
 
     try {
       final result = await FirebaseFirestore.instance
-          .collection('coffee_cards')
+          .collection(usersCollection)
           .doc(docId)
           .update(updateData);
       // isLoading = false;
@@ -166,35 +143,21 @@ class UserModel extends ChangeNotifier {
     }
   }
 
-  // docIdをセットする
-  Future<String> _updateCardDocId(String docId) async {
+  Future<String> updateNotificationAt(UserDto userDto) async {
     // ドキュメント更新
-    Map<String, dynamic> updateData = {};
-    updateData['id'] = docId;
-
-    try {
-      final result = await FirebaseFirestore.instance
-          .collection('coffee_cards')
-          .doc(docId)
-          .update(updateData);
-      return 'ok';
-    } catch (e) {
-      isLoading = false;
-      return 'error';
+    Map<String, dynamic> updateData = await _updateNotificationAt(userDto);
+    final String docId = userDto.id;
+    if (docId == null) {
+      return null;
     }
-  }
-
-  // docIdをセットする
-  Future<String> _updateUserImageDocId(String docId) async {
-    // ドキュメント更新
-    Map<String, dynamic> updateData = {};
-    updateData['id'] = docId;
 
     try {
       final result = await FirebaseFirestore.instance
-          .collection('user_images')
+          .collection(usersCollection)
           .doc(docId)
           .update(updateData);
+      // isLoading = false;
+      // _notiTime = userDto.notificationAt;
       return 'ok';
     } catch (e) {
       isLoading = false;

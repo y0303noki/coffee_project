@@ -10,6 +10,7 @@ class UserData {
   String googleId;
   int status;
   bool isDeleted;
+  String notificationAt;
 
   final DocumentReference reference;
 
@@ -19,7 +20,8 @@ class UserData {
         createdAt = map['createdAt'].toDate(),
         updatedAt = map['updatedAt'].toDate(),
         status = map['status'],
-        isDeleted = map['isDeleted'];
+        isDeleted = map['isDeleted'],
+        notificationAt = map['notificationAt'];
 
   UserData.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data(), reference: snapshot.reference);

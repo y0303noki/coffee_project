@@ -11,4 +11,9 @@ class DateUtility {
     var formatted = formatter.format(_dateTime); // DateからString
     return formatted;
   }
+
+  String toHHmm() {
+    initializeDateFormatting("ja_JP");
+    return (DateFormat.Hm()).format(_dateTime);
+  }
 }
