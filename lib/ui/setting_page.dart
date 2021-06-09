@@ -1,4 +1,5 @@
 import 'package:coffee_project/ui/account_page.dart';
+import 'package:coffee_project/ui/aggregate_page.dart';
 import 'package:coffee_project/ui/tutorial_page.dart';
 import 'package:coffee_project/view_model/login_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,6 +15,8 @@ class SettingPage extends StatelessWidget {
       body: ListView(children: [
         _openAccountPage("アカウント", Icon(Icons.person), context),
         _tutorialPage('チュートリアル', Icon(Icons.book), context),
+        _openAggregatePage('集計', Icon(Icons.list), context),
+
         // _settingListItem("通知", Icon(Icons.notifications), null),
       ]),
     );
@@ -77,6 +80,22 @@ class SettingPage extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => TutorialPage(),
+            fullscreenDialog: true,
+          ),
+        );
+      },
+    );
+  }
+
+  // 集計画面を開く
+  Widget _openAggregatePage(String title, Icon icon, BuildContext context) {
+    return GestureDetector(
+      child: _settingContainer(context, title, icon),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AggregatePage(),
             fullscreenDialog: true,
           ),
         );
