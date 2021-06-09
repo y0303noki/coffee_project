@@ -62,7 +62,7 @@ class HomePage extends StatelessWidget {
       create: (_) => HomeModel(),
       child: Consumer<HomeModel>(builder: (context, model, child) {
         return Scaffold(
-          backgroundColor: Theme.of(context).canvasColor,
+          backgroundColor: Theme.of(context).canvasColor.withOpacity(0.5),
           appBar: AppBar(
             backgroundColor: Theme.of(context).canvasColor,
             title: Text(

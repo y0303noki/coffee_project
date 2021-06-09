@@ -83,7 +83,8 @@ class ListCard extends StatelessWidget {
     String coffeeDateStr = DateUtility(_coffeeDate).toDateFormatted();
     return RepaintBoundary(
       key: _globalKey,
-      child: cardWidget(coffeeDateStr, context, tempCard),
+      // child: cardWidget(coffeeDateStr, context, tempCard),
+      child: _ticketWidget(coffeeDateStr, context, tempCard),
     );
   }
 
@@ -256,7 +257,6 @@ class ListCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  // SizedBox(height: 10),
                   Text(
                     '$_name',
                     style: TextStyle(
@@ -340,6 +340,128 @@ class ListCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  _ticketWidget(String dateStr, BuildContext context, ListCard listCard) {
+    // final Widget image = Image.asset('asset/images/coffeeSample.png');
+    Widget image = switchImage();
+
+    return Container(
+      width: double.infinity,
+      height: 180,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Container(
+              padding: EdgeInsets.all(5),
+              child: image,
+            ),
+          ),
+          Container(
+            width: 1,
+            height: double.infinity,
+            margin: EdgeInsets.symmetric(vertical: 5.0),
+            color: Colors.grey,
+          ),
+          Expanded(
+            flex: 2,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    _name,
+                    style: TextStyle(
+                      fontSize: _nameFontSize,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).textTheme.bodyText1.color,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    dateStr,
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 18,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    _memo,
+                    style: TextStyle(
+                      fontSize: _memoFontSize,
+                      color: Theme.of(context).textTheme.bodyText1.color,
+                    ),
+                  ),
+                  RatingBarIndicator(
+                    rating: _score.toDouble(),
+                    itemBuilder: (context, index) => Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
+                    itemCount: 5,
+                    itemSize: 20.0,
+                    direction: Axis.horizontal,
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: _isAddOrUpdateCard
+                            ? null
+                            : () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        AddOrEditCardPage(listCard),
+                                    fullscreenDialog: true,
+                                  ),
+                                ).then((value) {
+                                  if (value is SnackBar) {
+                                    // 保存が完了したら画面下部に完了メッセージを出す
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(value);
+                                  }
+                                });
+                              },
+                        color: Theme.of(context).textTheme.bodyText1.color,
+                        icon: Icon(Icons.edit_outlined),
+                      ),
+                      // SNSで共有ボタン
+                      IconButton(
+                        onPressed: _isAddOrUpdateCard
+                            ? null
+                            : () async {
+                                final bytes = await exportToImage(_globalKey);
+                                final nowUnixTime =
+                                    DateTime.now().millisecondsSinceEpoch;
+
+                                await Share.file(
+                                    'coffee Image',
+                                    'CoffeeProject$nowUnixTime.png',
+                                    bytes.buffer.asUint8List(),
+                                    'image/png',
+                                    text: '今日の1杯を投稿しました！ #CoffeeProject');
+                              },
+                        color: Theme.of(context).textTheme.bodyText1.color,
+                        icon: Icon(Icons.share_outlined),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
