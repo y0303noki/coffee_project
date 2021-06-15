@@ -14,11 +14,11 @@ class ListCardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> _items = ["A", "B", "C"];
-    String _selectedItem = "A";
-    final Size size = MediaQuery.of(context).size;
+    // List<String> _items = ["A", "B", "C"];
+    // String _selectedItem = "A";
+    // final Size size = MediaQuery.of(context).size;
     return ChangeNotifierProvider<CardModel>(
-      create: (_) => CardModel(),
+      create: (_) => CardModel()..findCardListHome(),
       child: Consumer<CardModel>(
         builder: (context, model, child) {
           return Column(
@@ -38,15 +38,14 @@ class ListCardPage extends StatelessWidget {
                     String _termTrimed = term.trim();
                     if (term.isNotEmpty) {
                       _searchKeyWord = _termTrimed;
-                      model.notifyListeners();
+                      model.refresh();
                     } else {
                       _searchKeyWord = '';
-                      model.notifyListeners();
                     }
                   },
                 ),
               ),
-              Expanded(child: _buildBody(context)),
+              Expanded(child: _buildBody(context, model)),
             ],
           );
         },
@@ -54,26 +53,16 @@ class ListCardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: CardModel().findCardListHome(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return LinearProgressIndicator();
-
-        return _buildList(context, snapshot.data.docs);
-      },
-    );
-  }
-
-  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+  Widget _buildBody(BuildContext context, CardModel model) {
+    List<Coffee> homeCoffees = model.homeCoffee;
     return ListView(
       padding: const EdgeInsets.only(top: 20.0),
-      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+      children:
+          homeCoffees.map((data) => _buildListItem(context, data)).toList(),
     );
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final coffee = Coffee.fromSnapshot(data);
+  Widget _buildListItem(BuildContext context, Coffee coffee) {
     // キーワード検索
     if (_searchKeyWord.isNotEmpty) {
       String _lowerName = coffee.name.toLowerCase();

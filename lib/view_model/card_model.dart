@@ -24,6 +24,12 @@ class CardModel extends ChangeNotifier {
   bool isLoading = false;
   String searchKeyword = '';
 
+  List<Coffee> _thisMonthCoffee = [];
+  List<Coffee> get thisMonthCoffee => _thisMonthCoffee;
+
+  List<Coffee> _homeCoffee = [];
+  List<Coffee> get homeCoffee => _homeCoffee;
+
   startLoading() {
     isLoading = true;
     notifyListeners();
@@ -34,19 +40,39 @@ class CardModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Stream<QuerySnapshot> findCardListHome() {
+  // Stream<QuerySnapshot> findCardListHome() {
+  //   // userIdは必ず指定する！
+  //   String userId = 'TEST';
+  //   if (LoginModel().user != null) {
+  //     userId = LoginModel().user.uid;
+  //   }
+  //   final coffeeCardList = FirebaseFirestore.instance
+  //       .collection('coffee_cards')
+  //       .where('userId', isEqualTo: userId)
+  //       .orderBy('updatedAt', descending: true)
+  //       .limit(standardLimit)
+  //       .snapshots();
+  //   return coffeeCardList;
+  // }
+
+  Future<List<Coffee>> findCardListHome() async {
     // userIdは必ず指定する！
-    String userId = 'TEST';
+    String userId = '';
     if (LoginModel().user != null) {
       userId = LoginModel().user.uid;
     }
-    final coffeeCardList = FirebaseFirestore.instance
+    final coffeeCardList = await FirebaseFirestore.instance
         .collection('coffee_cards')
         .where('userId', isEqualTo: userId)
         .orderBy('updatedAt', descending: true)
         .limit(standardLimit)
-        .snapshots();
-    return coffeeCardList;
+        .get();
+
+    List<Coffee> coffees =
+        coffeeCardList.docs.map((doc) => Coffee(doc)).toList();
+    this._homeCoffee = coffees;
+    notifyListeners();
+    return coffees;
   }
 
   Stream<QuerySnapshot> findUserImageByUserId() {
@@ -61,6 +87,29 @@ class CardModel extends ChangeNotifier {
         .snapshots();
 
     return userImage;
+  }
+
+  Future<List<Coffee>> findThisMonthMyCoffee() async {
+    // userIdは必ず指定する！
+    String userId = '';
+    if (LoginModel().user != null) {
+      userId = LoginModel().user.uid;
+    }
+
+    DateTime nowDate = DateTime.now();
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection('coffee_cards')
+        .where('userId', isEqualTo: userId)
+        .where('updatedAt',
+            isGreaterThanOrEqualTo: DateTime(nowDate.year, nowDate.month, 1))
+        .orderBy('updatedAt', descending: true)
+        .get();
+
+    List<Coffee> coffees = snapshot.docs.map((doc) => Coffee(doc)).toList();
+    this._thisMonthCoffee = coffees;
+    notifyListeners();
+    return coffees;
   }
 
   Stream<QuerySnapshot> findUserImage(String userImageId) {
