@@ -244,7 +244,6 @@ class HomeListCoffee extends StatelessWidget {
 
   Widget _buildListItem(BuildContext context, Coffee coffee, CardModel model) {
     // キーワード検索
-    print(_searchKeyWord);
     if (_searchKeyWord.isNotEmpty) {
       String _lowerName = coffee.name.toLowerCase();
       if (!_isContainKeyword(_lowerName, _searchKeyWord)) {
