@@ -18,12 +18,6 @@ class HomePage extends StatelessWidget {
     // ナビゲーションタブインデックス
     int _bottomIndex = 0;
     List<Coffee> home;
-    final _pageWidgets = [
-      ListCardPage(home),
-      AlbumPage(false),
-      SettingPage(),
-    ];
-
     final _pageTitles = [
       'ホーム',
       'アルバム',
@@ -78,11 +72,6 @@ class HomePage extends StatelessWidget {
       create: (_) => CardModel()..findCardListHome(),
       child: Consumer<CardModel>(builder: (context, model, child) {
         home = model.homeCoffee;
-        if (home.isNotEmpty) {
-          print(home.first.name);
-        } else {
-          print('empty');
-        }
         return Scaffold(
           backgroundColor: Theme.of(context).canvasColor.withOpacity(0.5),
           appBar: AppBar(
@@ -247,12 +236,13 @@ class HomeListCoffee extends StatelessWidget {
 
     return ListView(
       padding: const EdgeInsets.only(top: 20.0),
-      children:
-          homeListCoffees.map((data) => _buildListItem(context, data)).toList(),
+      children: homeListCoffees
+          .map((data) => _buildListItem(context, data, model))
+          .toList(),
     );
   }
 
-  Widget _buildListItem(BuildContext context, Coffee coffee) {
+  Widget _buildListItem(BuildContext context, Coffee coffee, CardModel model) {
     // キーワード検索
     print(_searchKeyWord);
     if (_searchKeyWord.isNotEmpty) {
@@ -268,7 +258,7 @@ class HomeListCoffee extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
         child: ListCard(coffee.id, coffee.name, coffee.coffeeAt, coffee.memo,
-            coffee.isPublic, coffee.score, null, userImageId, false),
+            coffee.isPublic, coffee.score, null, userImageId, false, model),
       ),
     );
   }

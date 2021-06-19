@@ -29,6 +29,7 @@ class ListCard extends StatelessWidget {
   String _userImageId;
   // True:追加or編集画面 False:リスト画面
   final bool _isAddOrUpdateCard;
+  final CardModel _model;
 
   // getter
   String get id => _id;
@@ -52,7 +53,8 @@ class ListCard extends StatelessWidget {
       this._score,
       this._imageFile,
       this._userImageId,
-      this._isAddOrUpdateCard) {
+      this._isAddOrUpdateCard,
+      this._model) {
     // フォントサイズ設定
     if (this._name.length < 10) {
       _nameFontSize = 26;
@@ -78,13 +80,13 @@ class ListCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ListCard tempCard = new ListCard(_id, _name, _coffeeDate, _memo, _isPublic,
-        _score, _imageFile, _userImageId, _isAddOrUpdateCard);
+        _score, _imageFile, _userImageId, _isAddOrUpdateCard, _model);
 
     String coffeeDateStr = DateUtility(_coffeeDate).toDateFormatted();
     return RepaintBoundary(
       key: _globalKey,
       // child: cardWidget(coffeeDateStr, context, tempCard),
-      child: _ticketWidget(coffeeDateStr, context, tempCard),
+      child: _ticketWidget(coffeeDateStr, context, tempCard, _model),
     );
   }
 
@@ -344,7 +346,8 @@ class ListCard extends StatelessWidget {
     );
   }
 
-  _ticketWidget(String dateStr, BuildContext context, ListCard listCard) {
+  Widget _ticketWidget(String dateStr, BuildContext context, ListCard listCard,
+      CardModel model) {
     // final Widget image = Image.asset('asset/images/coffeeSample.png');
     Widget image = switchImage();
 
@@ -426,6 +429,8 @@ class ListCard extends StatelessWidget {
                                     fullscreenDialog: true,
                                   ),
                                 ).then((value) {
+                                  model.findCardListHome();
+                                  model.refresh();
                                   if (value is SnackBar) {
                                     // 保存が完了したら画面下部に完了メッセージを出す
                                     ScaffoldMessenger.of(context)

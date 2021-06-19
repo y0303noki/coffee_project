@@ -100,7 +100,7 @@ class AddOrEditCardPage extends StatelessWidget {
                   // 画像のファイルパスをセット
                   _imageFile = model.imageFile;
                   listCard = ListCard(_id, _name, postDate, _memo, _isPublic,
-                      _score, _imageFile, _userImageId, true);
+                      _score, _imageFile, _userImageId, true, model);
                   return Center(
                     child: SingleChildScrollView(
                       child: Column(
