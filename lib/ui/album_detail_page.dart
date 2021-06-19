@@ -17,13 +17,13 @@ class AlbumDetailPage extends StatelessWidget {
       body: GestureDetector(
         // 水平方向にスワイプしたら画面を戻す
         onHorizontalDragUpdate: (details) {
-          if (details.delta.dx > 18 || details.delta.dx > -18) {
+          if (details.delta.dx > 18 || details.delta.dx < -18) {
             Navigator.pop(context);
           }
         },
         // 垂直方向にスワイプしたら画面を戻す
         onVerticalDragUpdate: (details) {
-          if (details.delta.dx > 25 || details.delta.dx > -25) {
+          if (details.delta.dy > 25 || details.delta.dy < -25) {
             Navigator.pop(context);
           }
         },
