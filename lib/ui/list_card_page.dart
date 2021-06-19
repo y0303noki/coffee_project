@@ -10,10 +10,14 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class ListCardPage extends StatelessWidget {
+  List<Coffee> homeCoffees;
+  ListCardPage(this.homeCoffees);
+
   String _searchKeyWord = '';
 
   @override
   Widget build(BuildContext context) {
+    print('Go!');
     // List<String> _items = ["A", "B", "C"];
     // String _selectedItem = "A";
     // final Size size = MediaQuery.of(context).size;
@@ -54,7 +58,7 @@ class ListCardPage extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context, CardModel model) {
-    List<Coffee> homeCoffees = model.homeCoffee;
+    homeCoffees = model.homeCoffee;
     return ListView(
       padding: const EdgeInsets.only(top: 20.0),
       children:
