@@ -5,7 +5,11 @@ class TutorialPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('操作説明'),
+        backgroundColor: Theme.of(context).canvasColor,
+        title: Text(
+          'チュートリアル',
+          style: Theme.of(context).textTheme.headline6,
+        ),
       ),
       body: _buildSocialLogin(context),
     );
