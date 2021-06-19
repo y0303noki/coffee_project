@@ -12,57 +12,61 @@ class AlbumDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return ChangeNotifierProvider<CardModel>(
-    //   create: (_) => CardModel(),
-    //   child: Consumer<CardModel>(
-    //     builder: (context, model, child) {
-    //       return Center(
-    //         child: Image.network(_imageUrl),
-    //       );
-    //     },
-    //   ),
-    // );
     return Scaffold(
       backgroundColor: Colors.black.withOpacity(0.5),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            child: Row(
-              children: [
-                // バツボタン
-                IconButton(
-                  padding: EdgeInsets.only(top: 60),
-                  iconSize: 20,
-                  color: Colors.white,
-                  icon: Icon(Icons.close),
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
+      body: GestureDetector(
+        // 水平方向にスワイプしたら画面を戻す
+        onHorizontalDragUpdate: (details) {
+          if (details.delta.dx > 18 || details.delta.dx > -18) {
+            Navigator.pop(context);
+          }
+        },
+        // 垂直方向にスワイプしたら画面を戻す
+        onVerticalDragUpdate: (details) {
+          if (details.delta.dx > 25 || details.delta.dx > -25) {
+            Navigator.pop(context);
+          }
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              child: Row(
+                children: [
+                  // バツボタン
+                  IconButton(
+                    padding: EdgeInsets.only(top: 60),
+                    iconSize: 20,
+                    color: Colors.white,
+                    icon: Icon(Icons.close),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-          Center(
-            child: Image.network(_imageUrl),
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(10, 0, 10, 50),
-            child: IconButton(
-              iconSize: 50,
-              color: Colors.red,
-              icon: Icon(Icons.delete_outline_outlined),
-              onPressed: () async {
-                // 画像をfireStoregeから削除して画面戻る
-                await CardModel().deleteUserImageFunc(_imageId);
-                final SnackBar snackBar = SnackBar(
-                  content: Text('削除が完了しました。'),
-                );
-                Navigator.of(context).pop(snackBar);
-              },
+            Center(
+              child: Image.network(_imageUrl),
             ),
-          ),
-        ],
+            Padding(
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 50),
+              child: IconButton(
+                iconSize: 50,
+                color: Colors.red,
+                icon: Icon(Icons.delete_outline_outlined),
+                onPressed: () async {
+                  // 画像をfireStoregeから削除して画面戻る
+                  await CardModel().deleteUserImageFunc(_imageId);
+                  final SnackBar snackBar = SnackBar(
+                    content: Text('削除が完了しました。'),
+                  );
+                  Navigator.of(context).pop(snackBar);
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

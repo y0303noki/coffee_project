@@ -84,263 +84,279 @@ class AddOrEditCardPage extends StatelessWidget {
         ),
         body: ChangeNotifierProvider<CardModel>(
           create: (_) => CardModel(),
-          child: Stack(
-            children: [
-              Consumer<CardModel>(
-                builder: (context, model, child) {
-                  if (_name == null ||
-                      _name.isEmpty ||
-                      _name.length <= 0 ||
-                      _name.length >= 20) {
-                    _isAddButtonDisabled = true;
-                  } else {
-                    _isAddButtonDisabled = false;
-                  }
+          child: GestureDetector(
+            // 水平方向にスワイプしたら画面を戻す
+            onHorizontalDragUpdate: (details) {
+              if (details.delta.dx > 18 || details.delta.dx > -18) {
+                Navigator.pop(context);
+              }
+            },
+            // 垂直方向にスワイプしたら画面を戻す
+            onVerticalDragUpdate: (details) {
+              if (details.delta.dx > 25 || details.delta.dx > -25) {
+                Navigator.pop(context);
+              }
+            },
+            child: Stack(
+              children: [
+                Consumer<CardModel>(
+                  builder: (context, model, child) {
+                    if (_name == null ||
+                        _name.isEmpty ||
+                        _name.length <= 0 ||
+                        _name.length >= 20) {
+                      _isAddButtonDisabled = true;
+                    } else {
+                      _isAddButtonDisabled = false;
+                    }
 
-                  // 画像のファイルパスをセット
-                  _imageFile = model.imageFile;
-                  listCard = ListCard(_id, _name, postDate, _memo, _isPublic,
-                      _score, _imageFile, _userImageId, true, model);
-                  return Center(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 8.0),
-                            child: Container(
-                              child: listCard,
+                    // 画像のファイルパスをセット
+                    _imageFile = model.imageFile;
+                    listCard = ListCard(_id, _name, postDate, _memo, _isPublic,
+                        _score, _imageFile, _userImageId, true, model);
+                    return Center(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              child: Container(
+                                child: listCard,
+                              ),
                             ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 8.0),
-                            child: Column(
-                              children: [
-                                TextField(
-                                  controller: _nameTextEditController,
-                                  decoration: InputDecoration(
-                                    labelStyle: TextStyle(color: Colors.black),
-                                    labelText: '名前',
-                                    hintText: '何飲んだ？',
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              child: Column(
+                                children: [
+                                  TextField(
+                                    controller: _nameTextEditController,
+                                    decoration: InputDecoration(
+                                      labelStyle:
+                                          TextStyle(color: Colors.black),
+                                      labelText: '名前',
+                                      hintText: '何飲んだ？',
+                                    ),
+                                    onChanged: (text) {
+                                      if (text != null && text.length > 20) {
+                                        print('20文字超えたらもう無理!');
+                                      } else {
+                                        _name = text;
+                                        model.refresh();
+                                      }
+                                    },
                                   ),
-                                  onChanged: (text) {
-                                    if (text != null && text.length > 20) {
-                                      print('20文字超えたらもう無理!');
-                                    } else {
-                                      _name = text;
-                                      model.refresh();
-                                    }
-                                  },
-                                ),
-                                TextField(
-                                  controller: _memoTextEditingController,
-                                  decoration: InputDecoration(
-                                    labelStyle: TextStyle(color: Colors.black),
-                                    labelText: 'ひとこと',
-                                    hintText: 'メモ',
+                                  TextField(
+                                    controller: _memoTextEditingController,
+                                    decoration: InputDecoration(
+                                      labelStyle:
+                                          TextStyle(color: Colors.black),
+                                      labelText: 'ひとこと',
+                                      hintText: 'メモ',
+                                    ),
+                                    onChanged: (text) {
+                                      if (text != null && text.length > 20) {
+                                        print('20文字超えたらもう無理!');
+                                      } else {
+                                        _memo = text;
+                                        model.refresh();
+                                      }
+                                    },
                                   ),
-                                  onChanged: (text) {
-                                    if (text != null && text.length > 20) {
-                                      print('20文字超えたらもう無理!');
-                                    } else {
-                                      _memo = text;
-                                      model.refresh();
-                                    }
-                                  },
-                                ),
-                                // スコア
-                                Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                          child: Text(
-                                            'おすすめ',
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.black,
+                                  // スコア
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                0, 10, 0, 0),
+                                            child: Text(
+                                              'おすすめ',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    RatingBar.builder(
-                                      initialRating: _score.toDouble(),
-                                      minRating: 1,
-                                      itemSize: 30,
-                                      direction: Axis.horizontal,
-                                      allowHalfRating: false,
-                                      itemCount: 5,
-                                      itemPadding:
-                                          EdgeInsets.symmetric(horizontal: 4.0),
-                                      itemBuilder: (context, _) => Icon(
-                                        Icons.star,
-                                        color: Colors.amber,
+                                        ],
                                       ),
-                                      onRatingUpdate: (rating) {
-                                        _score = rating.toInt();
-                                        model.refresh();
-                                      },
-                                    ),
-                                  ],
-                                ),
+                                      RatingBar.builder(
+                                        initialRating: _score.toDouble(),
+                                        minRating: 1,
+                                        itemSize: 30,
+                                        direction: Axis.horizontal,
+                                        allowHalfRating: false,
+                                        itemCount: 5,
+                                        itemPadding: EdgeInsets.symmetric(
+                                            horizontal: 4.0),
+                                        itemBuilder: (context, _) => Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
+                                        onRatingUpdate: (rating) {
+                                          _score = rating.toInt();
+                                          model.refresh();
+                                        },
+                                      ),
+                                    ],
+                                  ),
 
-                                // 公開設定、まだ使わない
-                                // SwitchListTile(
-                                //   value: _isPublic,
-                                //   activeColor: Colors.orange,
-                                //   activeTrackColor: Colors.red,
-                                //   inactiveThumbColor: Colors.blue,
-                                //   inactiveTrackColor: Colors.grey,
-                                //   secondary: Icon(
-                                //     Icons.public,
-                                //     color:
-                                //         _isPublic ? Colors.orange[700] : Colors.grey[500],
-                                //     size: 30.0,
-                                //   ),
-                                //   title: Text('公開する'),
-                                //   onChanged: (bool e) {
-                                //     _isPublic = e;
-                                //     model.refresh();
-                                //   },
-                                // ),
+                                  // 公開設定、まだ使わない
+                                  // SwitchListTile(
+                                  //   value: _isPublic,
+                                  //   activeColor: Colors.orange,
+                                  //   activeTrackColor: Colors.red,
+                                  //   inactiveThumbColor: Colors.blue,
+                                  //   inactiveTrackColor: Colors.grey,
+                                  //   secondary: Icon(
+                                  //     Icons.public,
+                                  //     color:
+                                  //         _isPublic ? Colors.orange[700] : Colors.grey[500],
+                                  //     size: 30.0,
+                                  //   ),
+                                  //   title: Text('公開する'),
+                                  //   onChanged: (bool e) {
+                                  //     _isPublic = e;
+                                  //     model.refresh();
+                                  //   },
+                                  // ),
+                                ],
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Icon(Icons.image_rounded),
+                                TextButton(
+                                  child: Text('カメラロール'),
+                                  onPressed: () {
+                                    model.showImagePicker();
+                                    _imageFile = model.imageFile;
+                                    model.refresh();
+                                  },
+                                ),
+                                Icon(Icons.photo_album),
+                                TextButton(
+                                  child: Text('アルバム'),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => AlbumPage(true),
+                                        fullscreenDialog: true,
+                                      ),
+                                    ).then((value) {
+                                      // userImageIdが返ってくる
+                                      // 閉じるボタンで閉じた時はuserImageIdがnullなので更新しない
+                                      if (value != null) {
+                                        _userImageId = value;
+                                      }
+
+                                      model.refresh();
+                                    });
+                                    // _imageFile = model.imageFile;
+                                    // model.refresh();
+                                  },
+                                ),
+                                Icon(Icons.broken_image),
+                                TextButton(
+                                  child: Text('画像リセット'),
+                                  onPressed: () {
+                                    model.imageFile = null;
+                                    _userImageId = null;
+                                    model.refresh();
+                                  },
+                                ),
                               ],
                             ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Icon(Icons.image_rounded),
+                            if (!isEdit)
                               TextButton(
-                                child: Text('カメラロール'),
-                                onPressed: () {
-                                  model.showImagePicker();
-                                  _imageFile = model.imageFile;
-                                  model.refresh();
+                                child: Text('投稿する'),
+                                onPressed: _isAddButtonDisabled
+                                    ? null
+                                    : () async {
+                                        // ローディング開始
+                                        model.startLoading();
+
+                                        _name = _name == '' ? 'nullでした' : _name;
+                                        DateTime now = DateTime.now();
+                                        CoffeeCard addCard = new CoffeeCard(
+                                            name: _name,
+                                            score: _score,
+                                            memo: _memo,
+                                            isPublic: _isPublic,
+                                            userImageId: _userImageId,
+                                            updatedAt: now,
+                                            createdAt: now);
+                                        String addCardResult =
+                                            await model.addCard(addCard);
+                                        if (addCardResult ==
+                                            CardModel().validation_error) {
+                                          print('バリテーションエラー');
+                                        }
+                                        // ローディング終了
+                                        model.endLoading();
+
+                                        // SNS投稿ダイアログ
+                                        // await _showSuccsessDialog(context);
+
+                                        final SnackBar snackBar = SnackBar(
+                                          content: Text('投稿が完了しました。'),
+                                        );
+
+                                        // 画面戻る
+                                        Navigator.of(context).pop(snackBar);
+                                      },
+                              ),
+                            if (isEdit)
+                              TextButton(
+                                child: Text('更新する'),
+                                onPressed: () async {
+                                  // ローディング開始
+                                  model.startLoading();
+                                  CoffeeCard updateCard = new CoffeeCard(
+                                      id: _id,
+                                      name: _name,
+                                      score: _score,
+                                      memo: _memo,
+                                      isPublic: _isPublic,
+                                      userImageId: _userImageId);
+                                  final String updateCardResult =
+                                      await model.updateCard(updateCard);
+                                  // ローディング終了
+                                  model.endLoading();
+
+                                  // await _showSuccsessDialog(context);
+                                  final SnackBar snackBar = SnackBar(
+                                    content: Text('更新が完了しました。'),
+                                  );
+
+                                  // 画面戻る
+                                  Navigator.of(context).pop(snackBar);
                                 },
                               ),
-                              Icon(Icons.photo_album),
-                              TextButton(
-                                child: Text('アルバム'),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => AlbumPage(true),
-                                      fullscreenDialog: true,
-                                    ),
-                                  ).then((value) {
-                                    // userImageIdが返ってくる
-                                    // 閉じるボタンで閉じた時はuserImageIdがnullなので更新しない
-                                    if (value != null) {
-                                      _userImageId = value;
-                                    }
-
-                                    model.refresh();
-                                  });
-                                  // _imageFile = model.imageFile;
-                                  // model.refresh();
-                                },
-                              ),
-                              Icon(Icons.broken_image),
-                              TextButton(
-                                child: Text('画像リセット'),
-                                onPressed: () {
-                                  model.imageFile = null;
-                                  _userImageId = null;
-                                  model.refresh();
-                                },
-                              ),
-                            ],
-                          ),
-                          if (!isEdit)
-                            TextButton(
-                              child: Text('投稿する'),
-                              onPressed: _isAddButtonDisabled
-                                  ? null
-                                  : () async {
-                                      // ローディング開始
-                                      model.startLoading();
-
-                                      _name = _name == '' ? 'nullでした' : _name;
-                                      DateTime now = DateTime.now();
-                                      CoffeeCard addCard = new CoffeeCard(
-                                          name: _name,
-                                          score: _score,
-                                          memo: _memo,
-                                          isPublic: _isPublic,
-                                          userImageId: _userImageId,
-                                          updatedAt: now,
-                                          createdAt: now);
-                                      String addCardResult =
-                                          await model.addCard(addCard);
-                                      if (addCardResult ==
-                                          CardModel().validation_error) {
-                                        print('バリテーションエラー');
-                                      }
-                                      // ローディング終了
-                                      model.endLoading();
-
-                                      // SNS投稿ダイアログ
-                                      // await _showSuccsessDialog(context);
-
-                                      final SnackBar snackBar = SnackBar(
-                                        content: Text('投稿が完了しました。'),
-                                      );
-
-                                      // 画面戻る
-                                      Navigator.of(context).pop(snackBar);
-                                    },
-                            ),
-                          if (isEdit)
-                            TextButton(
-                              child: Text('更新する'),
-                              onPressed: () async {
-                                // ローディング開始
-                                model.startLoading();
-                                CoffeeCard updateCard = new CoffeeCard(
-                                    id: _id,
-                                    name: _name,
-                                    score: _score,
-                                    memo: _memo,
-                                    isPublic: _isPublic,
-                                    userImageId: _userImageId);
-                                final String updateCardResult =
-                                    await model.updateCard(updateCard);
-                                // ローディング終了
-                                model.endLoading();
-
-                                // await _showSuccsessDialog(context);
-                                final SnackBar snackBar = SnackBar(
-                                  content: Text('更新が完了しました。'),
-                                );
-
-                                // 画面戻る
-                                Navigator.of(context).pop(snackBar);
-                              },
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
-              Consumer<CardModel>(
-                builder: (context, model, child) {
-                  return model.isLoading
-                      ? Container(
-                          color: Colors.grey.withOpacity(0.5),
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        )
-                      : Container();
-                },
-              ),
-            ],
+                    );
+                  },
+                ),
+                Consumer<CardModel>(
+                  builder: (context, model, child) {
+                    return model.isLoading
+                        ? Container(
+                            color: Colors.grey.withOpacity(0.5),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                        : Container();
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
