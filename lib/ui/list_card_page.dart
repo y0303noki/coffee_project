@@ -61,12 +61,13 @@ class ListCardPage extends StatelessWidget {
     homeCoffees = model.homeCoffee;
     return ListView(
       padding: const EdgeInsets.only(top: 20.0),
-      children:
-          homeCoffees.map((data) => _buildListItem(context, data)).toList(),
+      children: homeCoffees
+          .map((data) => _buildListItem(context, data, model))
+          .toList(),
     );
   }
 
-  Widget _buildListItem(BuildContext context, Coffee coffee) {
+  Widget _buildListItem(BuildContext context, Coffee coffee, CardModel model) {
     // キーワード検索
     if (_searchKeyWord.isNotEmpty) {
       String _lowerName = coffee.name.toLowerCase();
@@ -81,7 +82,7 @@ class ListCardPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
         child: ListCard(coffee.id, coffee.name, coffee.coffeeAt, coffee.memo,
-            coffee.isPublic, coffee.score, null, userImageId, false),
+            coffee.isPublic, coffee.score, null, userImageId, false, model),
       ),
     );
   }
