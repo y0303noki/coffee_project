@@ -211,19 +211,17 @@ class HomeListCoffee extends StatelessWidget {
                 ),
                 onSubmitted: (term) {
                   // キーボードの検索ボタンを押した時の処理
-
-                  String _termTrimed = term.trim();
-                  if (term.isNotEmpty) {
-                    _searchKeyWord = _termTrimed;
-                    model.searchKeyword = _termTrimed;
-                    print('_searchKeyWord:$_searchKeyWord');
-                    homeListCoffees = homeListCoffees
-                        .where((element) => element.name == _searchKeyWord)
-                        .toList();
-                    model.refresh();
-                  } else {
-                    _searchKeyWord = '';
-                  }
+                  String _termTrimed = term;
+                  model.searchKeyword = _termTrimed;
+                  model.refresh();
+                  // if (term.isNotEmpty) {
+                  //   _searchKeyWord = _termTrimed;
+                  //   model.searchKeyword = _termTrimed;
+                  //   model.refresh();
+                  // } else {
+                  //   model.searchKeyword = _termTrimed;
+                  //   model.refresh();
+                  // }
                 },
               ),
             ),
@@ -236,16 +234,16 @@ class HomeListCoffee extends StatelessWidget {
 
   Widget _buildBody(BuildContext context, CardModel model, String keyword) {
     homeListCoffees = model.homeCoffee;
-    print('buildBody: $keyword');
-    if (homeListCoffees.isNotEmpty) {
-      print(homeListCoffees.first.name);
+
+    // キーワードが指定されたらフィルターする（部分一致）
+    String _keywordTrimed = keyword.trim();
+    if (_keywordTrimed.isNotEmpty) {
+      _keywordTrimed = _keywordTrimed.toLowerCase();
+      homeListCoffees = homeListCoffees
+          .where((element) =>
+              (element.name.toLowerCase()).contains(_keywordTrimed))
+          .toList();
     }
-
-    // homeListCoffees = homeListCoffees
-    //     .where((element) => element.name == _searchKeyWord)
-    //     .toList();
-
-    // model.refresh();
 
     return ListView(
       padding: const EdgeInsets.only(top: 20.0),
