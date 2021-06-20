@@ -141,35 +141,48 @@ class AddOrEditCardPage extends StatelessWidget {
                                   horizontal: 16.0, vertical: 8.0),
                               child: Column(
                                 children: [
-                                  TextField(
-                                    controller: _nameTextEditController,
-                                    decoration: InputDecoration(
-                                      labelStyle:
-                                          TextStyle(color: Colors.black),
-                                      labelText: '名前',
-                                      hintText: '何飲んだ？',
-                                    ),
-                                    onChanged: (text) {
-                                      if (text != null && text.length > 20) {
-                                        print('20文字超えたらもう無理!');
-                                      } else {
-                                        _name = text;
-                                        model.refresh();
-                                      }
-                                    },
-                                  ),
+                                  // TextField(
+                                  //   controller: _nameTextEditController,
+                                  //   decoration: InputDecoration(
+                                  //     labelStyle:
+                                  //         TextStyle(color: Colors.black),
+                                  //     labelText: '名前',
+                                  //     hintText: '何飲んだ？',
+                                  //   ),
+                                  //   onChanged: (text) {
+                                  //     if (text != null && text.length > 20) {
+                                  //       print('20文字超えたらもう無理!');
+                                  //     } else {
+                                  //       _name = text;
+                                  //       model.refresh();
+                                  //     }
+                                  //   },
+                                  // ),
                                   // サジェスト
                                   TypeAheadField(
                                     textFieldConfiguration:
                                         TextFieldConfiguration(
-                                            autofocus: true,
-                                            style: DefaultTextStyle.of(context)
-                                                .style
-                                                .copyWith(
-                                                    fontStyle:
-                                                        FontStyle.italic),
-                                            decoration: InputDecoration(
-                                                border: OutlineInputBorder())),
+                                      // autofocus: true,
+                                      controller: _nameTextEditController,
+                                      style: DefaultTextStyle.of(context)
+                                          .style
+                                          .copyWith(
+                                              fontStyle: FontStyle.italic),
+                                      decoration: InputDecoration(
+                                        labelStyle:
+                                            TextStyle(color: Colors.black),
+                                        labelText: '名前',
+                                        hintText: '何飲んだ？',
+                                      ),
+                                      onChanged: (text) {
+                                        if (text != null && text.length > 20) {
+                                          print('20文字超えたらもう無理!');
+                                        } else {
+                                          _name = text;
+                                          model.refresh();
+                                        }
+                                      },
+                                    ),
                                     suggestionsCallback: (pattern) async {
                                       // pattern:入力された文字
                                       // return: サジェスト候補となる文字列を返す
@@ -180,19 +193,17 @@ class AddOrEditCardPage extends StatelessWidget {
                                           .take(5)
                                           .toList();
                                       return _filter;
-                                      // return await BackendService.getSuggestions(pattern);
                                     },
                                     itemBuilder: (context, suggestion) {
                                       return ListTile(
                                         leading: Icon(Icons.shopping_cart),
-                                        // title: Text(suggestion['name']),
                                         title: Text(suggestion),
                                       );
                                     },
                                     onSuggestionSelected: (suggestion) {
-                                      // Navigator.of(context).push(MaterialPageRoute(
-                                      //   builder: (context) => ProductPage(product: suggestion)
-                                      // ));
+                                      _name = suggestion;
+                                      _nameTextEditController.text = suggestion;
+                                      model.refresh();
                                     },
                                   ),
                                   TextField(
