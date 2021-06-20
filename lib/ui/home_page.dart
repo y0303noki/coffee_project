@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget {
           width: 50,
           child: Image.asset('asset/images/coffeePlusToukaIcon.png'),
         ),
-        backgroundColor: Colors.brown,
+        backgroundColor: Colors.brown[100],
       ),
       FloatingActionButton(
         onPressed: () {
@@ -115,7 +115,7 @@ class HomePage extends StatelessWidget {
                     width: 50,
                     child: Image.asset('asset/images/coffeePlusToukaIcon.png'),
                   ),
-                  backgroundColor: Colors.brown,
+                  backgroundColor: Colors.brown[100],
                 )
               : null,
           // フッター とりあえず不要そうなのでコメントアウト
