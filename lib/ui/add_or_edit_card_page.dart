@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:coffee_project/model/coffee.dart';
 import 'package:coffee_project/model/coffee_card.dart';
 import 'package:coffee_project/ui/album_page.dart';
 import 'package:coffee_project/ui/list_card.dart';
@@ -13,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 // import 'package:share/share.dart';
 
@@ -50,6 +52,8 @@ class AddOrEditCardPage extends StatelessWidget {
   // Widgetをimageにするためのkey
   GlobalKey _globalKey = GlobalKey();
 
+  List<String> _suggestTitleList = [];
+
   @override
   Widget build(BuildContext context) {
     isEdit = editCard != null;
@@ -83,7 +87,7 @@ class AddOrEditCardPage extends StatelessWidget {
           backgroundColor: Theme.of(context).canvasColor,
         ),
         body: ChangeNotifierProvider<CardModel>(
-          create: (_) => CardModel(),
+          create: (_) => CardModel()..findThisMonthMyCoffee(),
           child: GestureDetector(
             // 水平方向にスワイプしたら画面を戻す
             onHorizontalDragUpdate: (details) {
@@ -101,6 +105,13 @@ class AddOrEditCardPage extends StatelessWidget {
               children: [
                 Consumer<CardModel>(
                   builder: (context, model, child) {
+                    // サジェストするための名前リストを取得
+                    List<Coffee> thisMonthCount = model.thisMonthCoffee;
+                    if (thisMonthCount.isNotEmpty) {
+                      _suggestTitleList =
+                          thisMonthCount.map((e) => e.name).toList();
+                    }
+
                     if (_name == null ||
                         _name.isEmpty ||
                         _name.length <= 0 ||
@@ -145,6 +156,43 @@ class AddOrEditCardPage extends StatelessWidget {
                                         _name = text;
                                         model.refresh();
                                       }
+                                    },
+                                  ),
+                                  // サジェスト
+                                  TypeAheadField(
+                                    textFieldConfiguration:
+                                        TextFieldConfiguration(
+                                            autofocus: true,
+                                            style: DefaultTextStyle.of(context)
+                                                .style
+                                                .copyWith(
+                                                    fontStyle:
+                                                        FontStyle.italic),
+                                            decoration: InputDecoration(
+                                                border: OutlineInputBorder())),
+                                    suggestionsCallback: (pattern) async {
+                                      // pattern:入力された文字
+                                      // return: サジェスト候補となる文字列を返す
+                                      List<String> _filter = _suggestTitleList
+                                          .where((element) => (element
+                                                  .toLowerCase())
+                                              .contains(pattern.toLowerCase()))
+                                          .take(5)
+                                          .toList();
+                                      return _filter;
+                                      // return await BackendService.getSuggestions(pattern);
+                                    },
+                                    itemBuilder: (context, suggestion) {
+                                      return ListTile(
+                                        leading: Icon(Icons.shopping_cart),
+                                        // title: Text(suggestion['name']),
+                                        title: Text(suggestion),
+                                      );
+                                    },
+                                    onSuggestionSelected: (suggestion) {
+                                      // Navigator.of(context).push(MaterialPageRoute(
+                                      //   builder: (context) => ProductPage(product: suggestion)
+                                      // ));
                                     },
                                   ),
                                   TextField(
