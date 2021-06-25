@@ -184,6 +184,9 @@ class AddOrEditCardPage extends StatelessWidget {
                                       },
                                     ),
                                     suggestionsCallback: (pattern) async {
+                                      if (pattern.isEmpty) {
+                                        return [];
+                                      }
                                       // pattern:入力された文字
                                       // return: サジェスト候補となる文字列を返す
                                       List<String> _filter = _suggestTitleList
@@ -196,9 +199,12 @@ class AddOrEditCardPage extends StatelessWidget {
                                     },
                                     itemBuilder: (context, suggestion) {
                                       return ListTile(
-                                        leading: Icon(Icons.shopping_cart),
                                         title: Text(suggestion),
                                       );
+                                    },
+                                    // サジェストの結果が0件の時のメッセージ
+                                    noItemsFoundBuilder: (context) {
+                                      return null;
                                     },
                                     onSuggestionSelected: (suggestion) {
                                       _name = suggestion;

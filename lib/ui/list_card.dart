@@ -381,6 +381,7 @@ class ListCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  SizedBox(height: 4),
                   Text(
                     _name,
                     style: TextStyle(
