@@ -9,6 +9,7 @@ class CoffeeCard {
   DateTime createdAt;
   DateTime coffeeAt;
   DateTime updatedAt;
+  bool isMyBottle;
   CoffeeCard(
       {this.id,
       this.name,
@@ -17,5 +18,6 @@ class CoffeeCard {
       this.isPublic,
       this.userImageId,
       this.updatedAt,
-      this.createdAt});
+      this.createdAt,
+      this.isMyBottle});
 }

@@ -37,6 +37,8 @@ class AddOrEditCardPage extends StatelessWidget {
   String _memo = '';
   // 公開or非公開
   bool _isPublic = false;
+  // お気に入り
+  bool _isMyBottle = false;
   // スコア
   int _score = 3;
   // 画像
@@ -64,6 +66,7 @@ class AddOrEditCardPage extends StatelessWidget {
       _isPublic = editCard.isPublic;
       _score = editCard.score;
       _userImageId = editCard.userImageId;
+      _isMyBottle = editCard.isMyBottle;
       // _imageUrl = editCard.imageUrl;
     }
 
@@ -123,8 +126,18 @@ class AddOrEditCardPage extends StatelessWidget {
 
                     // 画像のファイルパスをセット
                     _imageFile = model.imageFile;
-                    listCard = ListCard(_id, _name, postDate, _memo, _isPublic,
-                        _score, _imageFile, _userImageId, true, model);
+                    listCard = ListCard(
+                        _id,
+                        _name,
+                        postDate,
+                        _memo,
+                        _isPublic,
+                        _score,
+                        _imageFile,
+                        _userImageId,
+                        true,
+                        model,
+                        _isMyBottle);
                     return Center(
                       child: SingleChildScrollView(
                         child: Column(
@@ -267,6 +280,36 @@ class AddOrEditCardPage extends StatelessWidget {
                                       ),
                                     ],
                                   ),
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                0, 10, 0, 0),
+                                            child: Text(
+                                              'マイボトル',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Switch(
+                                        value: _isMyBottle,
+                                        activeColor: Colors.orange,
+                                        activeTrackColor: Colors.red,
+                                        inactiveThumbColor: Colors.blue,
+                                        inactiveTrackColor: Colors.grey,
+                                        onChanged: (bool e) {
+                                          _isMyBottle = e;
+                                          model.refresh();
+                                        },
+                                      ),
+                                    ],
+                                  ),
 
                                   // 公開設定、まだ使わない
                                   // SwitchListTile(
@@ -352,6 +395,7 @@ class AddOrEditCardPage extends StatelessWidget {
                                             score: _score,
                                             memo: _memo,
                                             isPublic: _isPublic,
+                                            isMyBottle: _isMyBottle,
                                             userImageId: _userImageId,
                                             updatedAt: now,
                                             createdAt: now);

@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,6 +18,7 @@ class CardModel extends ChangeNotifier {
 
   // バリテーションエラー
   static const String _validation_error = 'ValidationError';
+  static const String coffee_cards = 'coffee_cards';
   get validation_error => _validation_error;
 
   int bottomIndex = 0;
@@ -47,7 +49,7 @@ class CardModel extends ChangeNotifier {
   //     userId = LoginModel().user.uid;
   //   }
   //   final coffeeCardList = FirebaseFirestore.instance
-  //       .collection('coffee_cards')
+  //       .collection(coffee_cards)
   //       .where('userId', isEqualTo: userId)
   //       .orderBy('updatedAt', descending: true)
   //       .limit(standardLimit)
@@ -62,7 +64,7 @@ class CardModel extends ChangeNotifier {
       userId = LoginModel().user.uid;
     }
     final coffeeCardList = await FirebaseFirestore.instance
-        .collection('coffee_cards')
+        .collection(coffee_cards)
         .where('userId', isEqualTo: userId)
         .orderBy('updatedAt', descending: true)
         .limit(standardLimit)
@@ -99,7 +101,7 @@ class CardModel extends ChangeNotifier {
     DateTime nowDate = DateTime.now();
 
     final snapshot = await FirebaseFirestore.instance
-        .collection('coffee_cards')
+        .collection(coffee_cards)
         .where('userId', isEqualTo: userId)
         .where('updatedAt',
             isGreaterThanOrEqualTo: DateTime(nowDate.year, nowDate.month, 1))
@@ -110,6 +112,51 @@ class CardModel extends ChangeNotifier {
     this._thisMonthCoffee = coffees;
     notifyListeners();
     return coffees;
+  }
+
+  /**
+   * isMyBottleを全てfalseにする
+   */
+  Future<void> updateMyBottle() async {
+    // userIdは必ず指定する！
+    String userId = '';
+    if (LoginModel().user != null) {
+      userId = LoginModel().user.uid;
+    }
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection(coffee_cards)
+        .where('userId', isEqualTo: userId)
+        .where('isMyBottle', isEqualTo: true)
+        .get();
+
+    if (snapshot == null) {
+      return;
+    }
+
+    List<Coffee> coffees = snapshot.docs.map((doc) => Coffee(doc)).toList();
+    List<String> targetDocIds = coffees.map((coffee) => coffee.id).toList();
+
+    // ドキュメント更新
+    Map<String, dynamic> updateData = new Map<String, dynamic>();
+    // TODO:更新時刻が遅くなっちゃう。どうしようかな
+    // DateTime now = DateTime.now();
+    // updateData['updatedAt'] = now;
+    updateData['isMyBottle'] = false;
+
+    try {
+      for (String docId in targetDocIds) {
+        final result = await FirebaseFirestore.instance
+            .collection(coffee_cards)
+            .doc(docId)
+            .update(updateData);
+      }
+
+      return 'ok';
+    } catch (e) {
+      isLoading = false;
+      return 'error';
+    }
   }
 
   Stream<QuerySnapshot> findUserImage(String userImageId) {
@@ -174,6 +221,7 @@ class CardModel extends ChangeNotifier {
     addObject['updatedAt'] = addCoffeeCard.updatedAt;
     addObject['isDeleted'] = false;
     addObject['deletedAt'] = null;
+    addObject['isMyBottle'] = addCoffeeCard.isMyBottle;
 
     String imageUrl = await uploadImageUrl(addCoffeeCard, userImageId);
     // 画像アップロード
@@ -186,9 +234,14 @@ class CardModel extends ChangeNotifier {
       }
     }
 
+    // isMyBottleをfalseに更新
+    if (addCoffeeCard.isMyBottle) {
+      await updateMyBottle();
+    }
+
     try {
       final DocumentReference result = await FirebaseFirestore.instance
-          .collection('coffee_cards')
+          .collection(coffee_cards)
           .add(addObject);
       final data = await result.get();
       final String docId = data.id;
@@ -293,7 +346,7 @@ class CardModel extends ChangeNotifier {
 
     try {
       final result = await FirebaseFirestore.instance
-          .collection('coffee_cards')
+          .collection(coffee_cards)
           .doc(docId)
           .update(updateData);
       // isLoading = false;
@@ -312,7 +365,7 @@ class CardModel extends ChangeNotifier {
 
     try {
       final result = await FirebaseFirestore.instance
-          .collection('coffee_cards')
+          .collection(coffee_cards)
           .doc(docId)
           .update(updateData);
       return 'ok';

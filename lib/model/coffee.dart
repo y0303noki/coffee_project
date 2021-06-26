@@ -12,6 +12,7 @@ class Coffee {
     memo = doc['memo'];
     isPublic = doc['isPublic'];
     userImageId = doc['userImageId'];
+    isMyBottle = doc.data()['isMyBottle'] != null ? doc['isMyBottle'] : false;
   }
 
   String id;
@@ -23,6 +24,7 @@ class Coffee {
   String memo;
   bool isPublic;
   String userImageId;
+  bool isMyBottle;
 
   // final DocumentReference reference;
 

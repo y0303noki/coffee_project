@@ -256,8 +256,18 @@ class HomeListCoffee extends StatelessWidget {
       key: ValueKey(coffee.id),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Container(
-        child: ListCard(coffee.id, coffee.name, coffee.coffeeAt, coffee.memo,
-            coffee.isPublic, coffee.score, null, userImageId, false, model),
+        child: ListCard(
+            coffee.id,
+            coffee.name,
+            coffee.coffeeAt,
+            coffee.memo,
+            coffee.isPublic,
+            coffee.score,
+            null,
+            userImageId,
+            false,
+            model,
+            coffee.isMyBottle),
       ),
     );
   }

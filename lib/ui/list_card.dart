@@ -30,6 +30,7 @@ class ListCard extends StatelessWidget {
   // True:追加or編集画面 False:リスト画面
   final bool _isAddOrUpdateCard;
   final CardModel _model;
+  final bool _isMyBottle;
 
   // getter
   String get id => _id;
@@ -39,6 +40,7 @@ class ListCard extends StatelessWidget {
   bool get isPublic => _isPublic;
   int get score => _score;
   String get userImageId => _userImageId;
+  bool get isMyBottle => _isMyBottle;
 
   GlobalKey _globalKey = GlobalKey();
   double _nameFontSize = 1;
@@ -54,7 +56,8 @@ class ListCard extends StatelessWidget {
       this._imageFile,
       this._userImageId,
       this._isAddOrUpdateCard,
-      this._model) {
+      this._model,
+      this._isMyBottle) {
     // フォントサイズ設定
     if (this._name.length < 10) {
       _nameFontSize = 26;
@@ -79,8 +82,18 @@ class ListCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ListCard tempCard = new ListCard(_id, _name, _coffeeDate, _memo, _isPublic,
-        _score, _imageFile, _userImageId, _isAddOrUpdateCard, _model);
+    ListCard tempCard = new ListCard(
+        _id,
+        _name,
+        _coffeeDate,
+        _memo,
+        _isPublic,
+        _score,
+        _imageFile,
+        _userImageId,
+        _isAddOrUpdateCard,
+        _model,
+        _isMyBottle);
 
     String coffeeDateStr = DateUtility(_coffeeDate).toDateFormatted();
     return RepaintBoundary(
@@ -350,12 +363,15 @@ class ListCard extends StatelessWidget {
       CardModel model) {
     // final Widget image = Image.asset('asset/images/coffeeSample.png');
     Widget image = switchImage();
+    bool _isMyBottle = listCard.isMyBottle;
 
     return Container(
       width: double.infinity,
       height: 180,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
+        border: Border.all(
+            color: _isMyBottle ? Colors.orange : Colors.grey,
+            width: _isMyBottle ? 3 : 1),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -368,10 +384,10 @@ class ListCard extends StatelessWidget {
             ),
           ),
           Container(
-            width: 1,
+            width: _isMyBottle ? 3 : 1,
             height: double.infinity,
             margin: EdgeInsets.symmetric(vertical: 5.0),
-            color: Colors.grey,
+            color: _isMyBottle ? Colors.orange : Colors.grey,
           ),
           Expanded(
             flex: 2,
