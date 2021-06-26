@@ -110,6 +110,7 @@ class AddOrEditCardPage extends StatelessWidget {
                     if (thisMonthCount.isNotEmpty) {
                       _suggestTitleList =
                           thisMonthCount.map((e) => e.name).toList();
+                      _suggestTitleList = _suggestTitleList.toSet().toList();
                     }
 
                     if (_name == null ||
