@@ -30,6 +30,9 @@ class CardModel extends ChangeNotifier {
   List<Coffee> _homeCoffee = [];
   List<Coffee> get homeCoffee => _homeCoffee;
 
+  List<Coffee> _limitMyCoffee = [];
+  List<Coffee> get limitMyCoffee => _limitMyCoffee;
+
   startLoading() {
     isLoading = true;
     notifyListeners();
@@ -127,6 +130,30 @@ class CardModel extends ChangeNotifier {
     return userImage;
   }
 
+  Future<List<Coffee>> findMyCoffeeLimitTo(int limit) async {
+    // userIdは必ず指定する！
+    String userId = '';
+    if (LoginModel().user != null) {
+      userId = LoginModel().user.uid;
+    }
+
+    DateTime nowDate = DateTime.now();
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection('coffee_cards')
+        .where('userId', isEqualTo: userId)
+        .where('updatedAt',
+            isGreaterThanOrEqualTo: DateTime(nowDate.year, nowDate.month, 1))
+        .orderBy('updatedAt', descending: true)
+        .limit(limit)
+        .get();
+
+    List<Coffee> coffees = snapshot.docs.map((doc) => Coffee(doc)).toList();
+    this._limitMyCoffee = coffees;
+    notifyListeners();
+    return coffees;
+  }
+
   Future<DocumentSnapshot> getUserInfo(String uid) {
     String userId = 'TEST';
     if (LoginModel().user != null) {
@@ -146,8 +173,9 @@ class CardModel extends ChangeNotifier {
         addCoffeeCard.name.length >= 20) {
       return validation_error;
     }
-    // ひとことのバリテーション
-    if (addCoffeeCard.memo != null && addCoffeeCard.memo.length >= 20) {
+    // 店名/ブランド名のバリテーション
+    if (addCoffeeCard.shopOrBrandName != null &&
+        addCoffeeCard.shopOrBrandName.length >= 20) {
       return validation_error;
     }
     // おすすめのバリテーション
@@ -166,7 +194,7 @@ class CardModel extends ChangeNotifier {
     addObject['userId'] = userId;
     addObject['name'] = addCoffeeCard.name;
     addObject['score'] = addCoffeeCard.score;
-    addObject['memo'] = addCoffeeCard.memo;
+    addObject['shopOrBrandName'] = addCoffeeCard.shopOrBrandName;
     addObject['isPublic'] = addCoffeeCard.isPublic;
     addObject['userImageId'] = userImageId;
     addObject['coffeeAt'] = addCoffeeCard.createdAt; // 作成日時と同じにしておく
@@ -238,8 +266,8 @@ class CardModel extends ChangeNotifier {
       result['name'] = updateCard.name;
     }
 
-    if (updateCard.memo != null) {
-      result['memo'] = updateCard.memo;
+    if (updateCard.shopOrBrandName != null) {
+      result['shopOrBrandName'] = updateCard.shopOrBrandName;
     }
 
     result['userImageId'] = updateCard.userImageId;
@@ -274,8 +302,9 @@ class CardModel extends ChangeNotifier {
         updateCard.name.length >= 20) {
       return validation_error;
     }
-    // ひとことのバリテーション
-    if (updateCard.memo != null && updateCard.memo.length >= 20) {
+    // 店名/ブランド名
+    if (updateCard.shopOrBrandName != null &&
+        updateCard.shopOrBrandName.length >= 20) {
       return validation_error;
     }
     // おすすめのバリテーション

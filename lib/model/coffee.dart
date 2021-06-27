@@ -9,7 +9,7 @@ class Coffee {
     coffeeAt = doc['coffeeAt'].toDate();
     createdAt = doc['createdAt'].toDate();
     updatedAt = doc['updatedAt'].toDate();
-    memo = doc['memo'];
+    shopOrBrandName = doc.data()['shopOrBrandName'] ?? '';
     isPublic = doc['isPublic'];
     userImageId = doc['userImageId'];
   }
@@ -20,7 +20,7 @@ class Coffee {
   DateTime coffeeAt;
   DateTime createdAt;
   DateTime updatedAt;
-  String memo;
+  String shopOrBrandName;
   bool isPublic;
   String userImageId;
 

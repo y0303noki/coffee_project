@@ -33,8 +33,8 @@ class AddOrEditCardPage extends StatelessWidget {
   String _id;
   // 名前
   String _name = '';
-  // メモ
-  String _memo = '';
+  // 店名/ブランド名
+  String _shopOrBrandName = '';
   // 公開or非公開
   bool _isPublic = false;
   // スコア
@@ -53,6 +53,7 @@ class AddOrEditCardPage extends StatelessWidget {
   GlobalKey _globalKey = GlobalKey();
 
   List<String> _suggestTitleList = [];
+  List<String> _suggestShopOrBrandList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +61,7 @@ class AddOrEditCardPage extends StatelessWidget {
     if (isEdit) {
       _id = editCard.id;
       _name = editCard.name;
-      _memo = editCard.memo;
+      _shopOrBrandName = editCard.shopOrBrandName;
       _isPublic = editCard.isPublic;
       _score = editCard.score;
       _userImageId = editCard.userImageId;
@@ -71,9 +72,9 @@ class AddOrEditCardPage extends StatelessWidget {
     TextEditingController _nameTextEditController =
         TextEditingController(text: _name);
 
-    // メモ
-    TextEditingController _memoTextEditingController =
-        TextEditingController(text: _memo);
+    // 店名/ブランド名
+    TextEditingController _shopOrBrandTextEditingController =
+        TextEditingController(text: _shopOrBrandName);
 
     return RepaintBoundary(
       key: _globalKey,
@@ -87,7 +88,7 @@ class AddOrEditCardPage extends StatelessWidget {
           backgroundColor: Theme.of(context).canvasColor,
         ),
         body: ChangeNotifierProvider<CardModel>(
-          create: (_) => CardModel()..findThisMonthMyCoffee(),
+          create: (_) => CardModel()..findMyCoffeeLimitTo(20),
           child: GestureDetector(
             // 水平方向にスワイプしたら画面を戻す
             onHorizontalDragUpdate: (details) {
@@ -106,11 +107,16 @@ class AddOrEditCardPage extends StatelessWidget {
                 Consumer<CardModel>(
                   builder: (context, model, child) {
                     // サジェストするための名前リストを取得
-                    List<Coffee> thisMonthCount = model.thisMonthCoffee;
-                    if (thisMonthCount.isNotEmpty) {
+                    List<Coffee> limitMyCoffee = model.limitMyCoffee;
+                    if (limitMyCoffee.isNotEmpty) {
                       _suggestTitleList =
-                          thisMonthCount.map((e) => e.name).toList();
+                          limitMyCoffee.map((e) => e.name).toList();
                       _suggestTitleList = _suggestTitleList.toSet().toList();
+
+                      _suggestShopOrBrandList = limitMyCoffee
+                          .map((e) => e.shopOrBrandName)
+                          .toSet()
+                          .toList();
                     }
 
                     if (_name == null ||
@@ -124,8 +130,17 @@ class AddOrEditCardPage extends StatelessWidget {
 
                     // 画像のファイルパスをセット
                     _imageFile = model.imageFile;
-                    listCard = ListCard(_id, _name, postDate, _memo, _isPublic,
-                        _score, _imageFile, _userImageId, true, model);
+                    listCard = ListCard(
+                        _id,
+                        _name,
+                        postDate,
+                        _shopOrBrandName,
+                        _isPublic,
+                        _score,
+                        _imageFile,
+                        _userImageId,
+                        true,
+                        model);
                     return Center(
                       child: SingleChildScrollView(
                         child: Column(
@@ -142,24 +157,7 @@ class AddOrEditCardPage extends StatelessWidget {
                                   horizontal: 16.0, vertical: 8.0),
                               child: Column(
                                 children: [
-                                  // TextField(
-                                  //   controller: _nameTextEditController,
-                                  //   decoration: InputDecoration(
-                                  //     labelStyle:
-                                  //         TextStyle(color: Colors.black),
-                                  //     labelText: '名前',
-                                  //     hintText: '何飲んだ？',
-                                  //   ),
-                                  //   onChanged: (text) {
-                                  //     if (text != null && text.length > 20) {
-                                  //       print('20文字超えたらもう無理!');
-                                  //     } else {
-                                  //       _name = text;
-                                  //       model.refresh();
-                                  //     }
-                                  //   },
-                                  // ),
-                                  // サジェスト
+                                  // 名前
                                   TypeAheadField(
                                     textFieldConfiguration:
                                         TextFieldConfiguration(
@@ -213,23 +211,64 @@ class AddOrEditCardPage extends StatelessWidget {
                                       model.refresh();
                                     },
                                   ),
-                                  TextField(
-                                    controller: _memoTextEditingController,
-                                    decoration: InputDecoration(
-                                      labelStyle:
-                                          TextStyle(color: Colors.black),
-                                      labelText: 'ひとこと',
-                                      hintText: 'メモ',
+                                  TypeAheadField(
+                                    textFieldConfiguration:
+                                        TextFieldConfiguration(
+                                      // autofocus: true,
+                                      controller:
+                                          _shopOrBrandTextEditingController,
+                                      style: DefaultTextStyle.of(context)
+                                          .style
+                                          .copyWith(
+                                              fontStyle: FontStyle.italic),
+                                      decoration: InputDecoration(
+                                        labelStyle:
+                                            TextStyle(color: Colors.black),
+                                        labelText: '店名 / ブランド名',
+                                        hintText: '',
+                                      ),
+                                      onChanged: (text) {
+                                        if (text != null && text.length > 20) {
+                                          print('20文字超えたらもう無理!');
+                                        } else {
+                                          _shopOrBrandName = text;
+                                          model.refresh();
+                                        }
+                                      },
                                     ),
-                                    onChanged: (text) {
-                                      if (text != null && text.length > 20) {
-                                        print('20文字超えたらもう無理!');
-                                      } else {
-                                        _memo = text;
-                                        model.refresh();
+                                    suggestionsCallback: (pattern) async {
+                                      if (pattern.isEmpty) {
+                                        return [];
                                       }
+                                      // pattern:入力された文字
+                                      // return: サジェスト候補となる文字列を返す
+                                      List<String> _filter =
+                                          _suggestShopOrBrandList
+                                              .where((element) => (element
+                                                      .toLowerCase())
+                                                  .contains(
+                                                      pattern.toLowerCase()))
+                                              .take(5)
+                                              .toList();
+                                      return _filter;
+                                    },
+                                    itemBuilder: (context, suggestion) {
+                                      return ListTile(
+                                        title: Text(suggestion),
+                                      );
+                                    },
+                                    // サジェストの結果が0件の時のメッセージ
+                                    noItemsFoundBuilder: (context) {
+                                      return null;
+                                    },
+                                    onSuggestionSelected: (suggestion) {
+                                      _shopOrBrandName = suggestion;
+                                      _shopOrBrandTextEditingController.text =
+                                          suggestion;
+                                      model.refresh();
                                     },
                                   ),
+
                                   // スコア
                                   Column(
                                     children: [
@@ -351,7 +390,7 @@ class AddOrEditCardPage extends StatelessWidget {
                                         CoffeeCard addCard = new CoffeeCard(
                                             name: _name,
                                             score: _score,
-                                            memo: _memo,
+                                            shopOrBrandName: _shopOrBrandName,
                                             isPublic: _isPublic,
                                             userImageId: _userImageId,
                                             updatedAt: now,
@@ -386,7 +425,7 @@ class AddOrEditCardPage extends StatelessWidget {
                                       id: _id,
                                       name: _name,
                                       score: _score,
-                                      memo: _memo,
+                                      shopOrBrandName: _shopOrBrandName,
                                       isPublic: _isPublic,
                                       userImageId: _userImageId);
                                   final String updateCardResult =
