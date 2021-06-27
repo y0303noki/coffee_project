@@ -106,66 +106,6 @@ class UserModel extends ChangeNotifier {
     }
   }
 
-  // 更新する情報をセットする
-  Future<Map<String, dynamic>> _setUpdateCard(CoffeeCard updateCard) async {
-    Map<String, dynamic> result = {};
-    DateTime now = DateTime.now();
-    result['updatedAt'] = now;
-
-    if (updateCard.name != null) {
-      result['name'] = updateCard.name;
-    }
-
-    if (updateCard.memo != null) {
-      result['memo'] = updateCard.memo;
-    }
-
-    result['userImageId'] = updateCard.userImageId;
-
-    if (updateCard.score != null) {
-      result['score'] = updateCard.score;
-    }
-
-    return result;
-  }
-
-  Future<String> updateCard(CoffeeCard updateCard) async {
-    // 名前のバリテーション
-    if (updateCard.name == null ||
-        updateCard.name.isEmpty ||
-        updateCard.name.length >= 20) {
-      return validation_error;
-    }
-    // ひとことのバリテーション
-    if (updateCard.memo != null && updateCard.memo.length >= 20) {
-      return validation_error;
-    }
-    // おすすめのバリテーション
-    if (updateCard.score == null ||
-        updateCard.score < 0 ||
-        updateCard.score > 5) {
-      return validation_error;
-    }
-    // ドキュメント更新
-    Map<String, dynamic> updateData = await _setUpdateCard(updateCard);
-    final String docId = updateCard.id;
-    if (docId == null) {
-      return null;
-    }
-
-    try {
-      final result = await FirebaseFirestore.instance
-          .collection('coffee_cards')
-          .doc(docId)
-          .update(updateData);
-      // isLoading = false;
-      return 'ok';
-    } catch (e) {
-      isLoading = false;
-      return 'error';
-    }
-  }
-
   // docIdをセットする
   Future<String> _updateCardDocId(String docId) async {
     // ドキュメント更新

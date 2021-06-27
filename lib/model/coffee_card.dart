@@ -2,7 +2,8 @@ class CoffeeCard {
   String id;
   String name;
   int score;
-  String memo;
+  // String memo;
+  String shopOrBrandName;
   bool isPublic;
   // String imageUrl;
   String userImageId;
@@ -13,7 +14,7 @@ class CoffeeCard {
       {this.id,
       this.name,
       this.score,
-      this.memo,
+      this.shopOrBrandName,
       this.isPublic,
       this.userImageId,
       this.updatedAt,

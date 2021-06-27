@@ -21,7 +21,7 @@ class ListCard extends StatelessWidget {
   final String _id;
   final String _name;
   final DateTime _coffeeDate;
-  final String _memo;
+  final String _shopOrBrandName;
   final bool _isPublic;
   final int _score;
   // 端末内の画像のアドレス
@@ -35,20 +35,20 @@ class ListCard extends StatelessWidget {
   String get id => _id;
   String get name => _name;
   DateTime get coffeeDate => _coffeeDate;
-  String get memo => _memo;
+  String get shopOrBrandName => _shopOrBrandName;
   bool get isPublic => _isPublic;
   int get score => _score;
   String get userImageId => _userImageId;
 
   GlobalKey _globalKey = GlobalKey();
   double _nameFontSize = 1;
-  double _memoFontSize = 1;
+  double _shopOrBrandFontSize = 1;
 
   ListCard(
       this._id,
       this._name,
       this._coffeeDate,
-      this._memo,
+      this._shopOrBrandName,
       this._isPublic,
       this._score,
       this._imageFile,
@@ -66,21 +66,32 @@ class ListCard extends StatelessWidget {
       _nameFontSize = 15;
     }
 
-    if (this._memo.length < 10) {
-      _memoFontSize = 20;
-    } else if (this._memo.length >= 10 && this._memo.length < 13) {
-      _memoFontSize = 16;
-    } else if (this._memo.length >= 13 && this._memo.length < 15) {
-      _memoFontSize = 13;
+    if (this._shopOrBrandName.length < 10) {
+      _shopOrBrandFontSize = 20;
+    } else if (this._shopOrBrandName.length >= 10 &&
+        this._shopOrBrandName.length < 13) {
+      _shopOrBrandFontSize = 16;
+    } else if (this._shopOrBrandName.length >= 13 &&
+        this._shopOrBrandName.length < 15) {
+      _shopOrBrandFontSize = 13;
     } else {
-      _memoFontSize = 10;
+      _shopOrBrandFontSize = 10;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    ListCard tempCard = new ListCard(_id, _name, _coffeeDate, _memo, _isPublic,
-        _score, _imageFile, _userImageId, _isAddOrUpdateCard, _model);
+    ListCard tempCard = new ListCard(
+        _id,
+        _name,
+        _coffeeDate,
+        _shopOrBrandName,
+        _isPublic,
+        _score,
+        _imageFile,
+        _userImageId,
+        _isAddOrUpdateCard,
+        _model);
 
     String coffeeDateStr = DateUtility(_coffeeDate).toDateFormatted();
     return RepaintBoundary(
@@ -260,6 +271,12 @@ class ListCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
+                    '$dateStr',
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyText1.color,
+                    ),
+                  ),
+                  Text(
                     '$_name',
                     style: TextStyle(
                       fontSize: _nameFontSize,
@@ -268,15 +285,9 @@ class ListCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$dateStr',
+                    '$_shopOrBrandName',
                     style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyText1.color,
-                    ),
-                  ),
-                  Text(
-                    '$_memo',
-                    style: TextStyle(
-                      fontSize: _memoFontSize,
+                      fontSize: _shopOrBrandFontSize,
                       fontWeight: FontWeight.normal,
                       color: Theme.of(context).textTheme.bodyText1.color,
                     ),
@@ -383,6 +394,14 @@ class ListCard extends StatelessWidget {
                 children: [
                   SizedBox(height: 4),
                   Text(
+                    dateStr,
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 18,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
                     _name,
                     style: TextStyle(
                       fontSize: _nameFontSize,
@@ -392,20 +411,13 @@ class ListCard extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    dateStr,
+                    _shopOrBrandName,
                     style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 18,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    _memo,
-                    style: TextStyle(
-                      fontSize: _memoFontSize,
+                      fontSize: _shopOrBrandFontSize,
                       color: Theme.of(context).textTheme.bodyText1.color,
                     ),
                   ),
+                  SizedBox(height: 2),
                   RatingBarIndicator(
                     rating: _score.toDouble(),
                     itemBuilder: (context, index) => Icon(
