@@ -192,26 +192,21 @@ class HomeListCoffee extends StatelessWidget {
             // buildFloatingSearchBar(context),
             Padding(
               padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-              child: TextField(
-                textInputAction: TextInputAction.search,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search, color: Colors.black),
-                  hintText: "キーワード検索",
+              child: Card(
+                child: TextField(
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.search, color: Colors.black),
+                    hintText: "キーワード検索",
+                  ),
+                  onSubmitted: (term) {
+                    // キーボードの検索ボタンを押した時の処理
+                    String _termTrimed = term;
+                    model.searchKeyword = _termTrimed;
+                    model.refresh();
+                  },
                 ),
-                onSubmitted: (term) {
-                  // キーボードの検索ボタンを押した時の処理
-                  String _termTrimed = term;
-                  model.searchKeyword = _termTrimed;
-                  model.refresh();
-                  // if (term.isNotEmpty) {
-                  //   _searchKeyWord = _termTrimed;
-                  //   model.searchKeyword = _termTrimed;
-                  //   model.refresh();
-                  // } else {
-                  //   model.searchKeyword = _termTrimed;
-                  //   model.refresh();
-                  // }
-                },
               ),
             ),
             Expanded(child: _buildBody(context, model, model.searchKeyword)),

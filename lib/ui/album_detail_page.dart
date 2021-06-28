@@ -27,6 +27,7 @@ class AlbumDetailPage extends StatelessWidget {
             Navigator.pop(context);
           }
         },
+
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -60,6 +61,8 @@ class AlbumDetailPage extends StatelessWidget {
                   await CardModel().deleteUserImageFunc(_imageId);
                   final SnackBar snackBar = SnackBar(
                     content: Text('削除が完了しました。'),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
                   );
                   Navigator.of(context).pop(snackBar);
                 },

@@ -366,7 +366,9 @@ class ListCard extends StatelessWidget {
       width: double.infinity,
       height: 180,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
+        border: Border.all(
+          color: Colors.brown[500],
+        ),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -382,7 +384,7 @@ class ListCard extends StatelessWidget {
             width: 1,
             height: double.infinity,
             margin: EdgeInsets.symmetric(vertical: 5.0),
-            color: Colors.grey,
+            color: Colors.brown[500],
           ),
           Expanded(
             flex: 2,
@@ -446,6 +448,7 @@ class ListCard extends StatelessWidget {
                                   model.refresh();
                                   if (value is SnackBar) {
                                     // 保存が完了したら画面下部に完了メッセージを出す
+
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(value);
                                   }

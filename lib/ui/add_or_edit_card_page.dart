@@ -409,6 +409,9 @@ class AddOrEditCardPage extends StatelessWidget {
 
                                         final SnackBar snackBar = SnackBar(
                                           content: Text('投稿が完了しました。'),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10))),
                                         );
 
                                         // 画面戻る
@@ -436,6 +439,9 @@ class AddOrEditCardPage extends StatelessWidget {
                                   // await _showSuccsessDialog(context);
                                   final SnackBar snackBar = SnackBar(
                                     content: Text('更新が完了しました。'),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
                                   );
 
                                   // 画面戻る
