@@ -44,6 +44,9 @@ class ListCard extends StatelessWidget {
   double _nameFontSize = 1;
   double _shopOrBrandFontSize = 1;
 
+  String tempName;
+  String tempShopOrBrandName;
+
   ListCard(
       this._id,
       this._name,
@@ -55,27 +58,20 @@ class ListCard extends StatelessWidget {
       this._userImageId,
       this._isAddOrUpdateCard,
       this._model) {
-    // フォントサイズ設定
+    _nameFontSize = 26;
     if (this._name.length < 10) {
-      _nameFontSize = 26;
-    } else if (this._name.length >= 10 && this._name.length < 13) {
-      _nameFontSize = 23;
-    } else if (this._name.length >= 13 && this._name.length < 15) {
-      _nameFontSize = 20;
-    } else {
-      _nameFontSize = 15;
+      this.tempName = this._name;
+    } else if (this._name.length >= 10) {
+      String sub = this._name.substring(0, 9);
+      this.tempName = '$sub…';
     }
 
-    if (this._shopOrBrandName.length < 10) {
-      _shopOrBrandFontSize = 20;
-    } else if (this._shopOrBrandName.length >= 10 &&
-        this._shopOrBrandName.length < 13) {
-      _shopOrBrandFontSize = 16;
-    } else if (this._shopOrBrandName.length >= 13 &&
-        this._shopOrBrandName.length < 15) {
-      _shopOrBrandFontSize = 13;
-    } else {
-      _shopOrBrandFontSize = 10;
+    _shopOrBrandFontSize = 20;
+    if (this._shopOrBrandName.length < 14) {
+      this.tempShopOrBrandName = this.shopOrBrandName;
+    } else if (this._shopOrBrandName.length >= 14) {
+      String sub = this._shopOrBrandName.substring(0, 13);
+      this.tempShopOrBrandName = '$sub…';
     }
   }
 
@@ -277,7 +273,8 @@ class ListCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '$_name',
+                    // '$_name',
+                    'aaa',
                     style: TextStyle(
                       fontSize: _nameFontSize,
                       fontWeight: FontWeight.bold,
@@ -404,7 +401,7 @@ class ListCard extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    _name,
+                    tempName,
                     style: TextStyle(
                       fontSize: _nameFontSize,
                       fontWeight: FontWeight.bold,
@@ -413,7 +410,7 @@ class ListCard extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    _shopOrBrandName,
+                    tempShopOrBrandName,
                     style: TextStyle(
                       fontSize: _shopOrBrandFontSize,
                       color: Theme.of(context).textTheme.bodyText1.color,
