@@ -87,6 +87,7 @@ class CardModel extends ChangeNotifier {
     final userImage = FirebaseFirestore.instance
         .collection('user_images')
         .where('userId', isEqualTo: userId)
+        .orderBy('updatedAt', descending: true)
         .snapshots();
 
     return userImage;
