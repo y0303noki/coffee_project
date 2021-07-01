@@ -138,13 +138,9 @@ class CardModel extends ChangeNotifier {
       userId = LoginModel().user.uid;
     }
 
-    DateTime nowDate = DateTime.now();
-
     final snapshot = await FirebaseFirestore.instance
         .collection('coffee_cards')
         .where('userId', isEqualTo: userId)
-        .where('updatedAt',
-            isGreaterThanOrEqualTo: DateTime(nowDate.year, nowDate.month, 1))
         .orderBy('updatedAt', descending: true)
         .limit(limit)
         .get();
