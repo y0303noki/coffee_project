@@ -26,6 +26,9 @@ class CardModel extends ChangeNotifier {
   bool isLoading = false;
   String searchKeyword = '';
 
+  String userImageId;
+  // String get userImageId => _userImageId;
+
   List<Coffee> _thisMonthCoffee = [];
   List<Coffee> get thisMonthCoffee => _thisMonthCoffee;
 
