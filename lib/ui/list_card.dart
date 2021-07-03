@@ -58,15 +58,15 @@ class ListCard extends StatelessWidget {
       this._userImageId,
       this._isAddOrUpdateCard,
       this._model) {
-    _nameFontSize = 26;
-    if (this._name.length < 10) {
+    _nameFontSize = 22;
+    if (this._name.length < 12) {
       this.tempName = this._name;
-    } else if (this._name.length >= 10) {
-      String sub = this._name.substring(0, 9);
+    } else if (this._name.length >= 12) {
+      String sub = this._name.substring(0, 11);
       this.tempName = '$sub…';
     }
 
-    _shopOrBrandFontSize = 20;
+    _shopOrBrandFontSize = 18;
     if (this._shopOrBrandName.length < 14) {
       this.tempShopOrBrandName = this.shopOrBrandName;
     } else if (this._shopOrBrandName.length >= 14) {
