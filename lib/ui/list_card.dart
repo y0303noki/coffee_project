@@ -373,7 +373,7 @@ class ListCard extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Container(
-              padding: EdgeInsets.all(5),
+              // padding: EdgeInsets.all(5),
               child: image,
             ),
           ),
@@ -404,7 +404,7 @@ class ListCard extends StatelessWidget {
                     tempName,
                     style: TextStyle(
                       fontSize: _nameFontSize,
-                      fontWeight: FontWeight.bold,
+                      // fontWeight: FontWeight.bold,
                       color: Theme.of(context).textTheme.bodyText1.color,
                     ),
                   ),
