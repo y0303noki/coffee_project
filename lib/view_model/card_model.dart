@@ -26,6 +26,9 @@ class CardModel extends ChangeNotifier {
   bool isLoading = false;
   String searchKeyword = '';
 
+  String userImageId;
+  // String get userImageId => _userImageId;
+
   List<Coffee> _thisMonthCoffee = [];
   List<Coffee> get thisMonthCoffee => _thisMonthCoffee;
 
@@ -405,6 +408,17 @@ class CardModel extends ChangeNotifier {
   Future showImagePicker() async {
     final picker = ImagePicker();
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    if (pickedFile == null) {
+      print('pickedfile is null');
+      return;
+    }
+    imageFile = File(pickedFile.path);
+    notifyListeners();
+  }
+
+  Future showImageCamera() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
     if (pickedFile == null) {
       print('pickedfile is null');
       return;
