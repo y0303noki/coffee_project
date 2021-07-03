@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coffee_project/model/coffee.dart';
 import 'package:coffee_project/model/coffee_card.dart';
+import 'package:coffee_project/model/shop_brand.dart';
 import 'package:coffee_project/view_model/login_model.dart';
+import 'package:coffee_project/view_model/shop_brand_model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,6 +34,9 @@ class CardModel extends ChangeNotifier {
 
   List<Coffee> _limitMyCoffee = [];
   List<Coffee> get limitMyCoffee => _limitMyCoffee;
+
+  List<ShopBrand> _shopOrBrandList = [];
+  List<ShopBrand> get shopOrBrandList => _shopOrBrandList;
 
   startLoading() {
     isLoading = true;
@@ -131,6 +136,15 @@ class CardModel extends ChangeNotifier {
     return userImage;
   }
 
+  Future<List<ShopBrand>> _findShopOrBrandList(int limit) async {
+    final shopBrandModel = ShopBrandModel();
+    final List<ShopBrand> list = await shopBrandModel.findShopBrand();
+
+    // this._shopOrBrandList = list;
+    // notifyListeners();
+    return this._shopOrBrandList;
+  }
+
   Future<List<Coffee>> findMyCoffeeLimitTo(int limit) async {
     // userIdは必ず指定する！
     String userId = '';
@@ -147,6 +161,9 @@ class CardModel extends ChangeNotifier {
 
     List<Coffee> coffees = snapshot.docs.map((doc) => Coffee(doc)).toList();
     this._limitMyCoffee = coffees;
+
+    final shopBrandModel = ShopBrandModel();
+    this._shopOrBrandList = await shopBrandModel.findShopBrand();
     notifyListeners();
     return coffees;
   }

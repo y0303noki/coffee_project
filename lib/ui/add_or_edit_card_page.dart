@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:coffee_project/model/coffee.dart';
 import 'package:coffee_project/model/coffee_card.dart';
+import 'package:coffee_project/model/shop_brand.dart';
 import 'package:coffee_project/ui/album_page.dart';
 import 'package:coffee_project/ui/list_card.dart';
 import 'package:coffee_project/view_model/card_model.dart';
@@ -52,6 +53,7 @@ class AddOrEditCardPage extends StatelessWidget {
   // Widgetをimageにするためのkey
   GlobalKey _globalKey = GlobalKey();
 
+  List<String> _shopOrBrandList = [];
   List<String> _suggestTitleList = [];
   List<String> _suggestShopOrBrandList = [];
 
@@ -108,15 +110,17 @@ class AddOrEditCardPage extends StatelessWidget {
                   builder: (context, model, child) {
                     // サジェストするための名前リストを取得
                     List<Coffee> limitMyCoffee = model.limitMyCoffee;
+
                     if (limitMyCoffee.isNotEmpty) {
                       _suggestTitleList =
                           limitMyCoffee.map((e) => e.name).toList();
                       _suggestTitleList = _suggestTitleList.toSet().toList();
-
-                      _suggestShopOrBrandList = limitMyCoffee
-                          .map((e) => e.shopOrBrandName)
-                          .toSet()
-                          .toList();
+                    }
+                    // サジェストするためのショップブランドリストを取得
+                    List<ShopBrand> shopOrBrand = model.shopOrBrandList;
+                    if (shopOrBrand.isNotEmpty) {
+                      _suggestShopOrBrandList =
+                          shopOrBrand.map((e) => e.name).toSet().toList();
                     }
 
                     if (_name == null ||

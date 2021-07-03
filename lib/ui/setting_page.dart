@@ -1,5 +1,6 @@
 import 'package:coffee_project/ui/account_page.dart';
 import 'package:coffee_project/ui/aggregate_page.dart';
+import 'package:coffee_project/ui/debug_page.dart';
 import 'package:coffee_project/ui/tutorial_page.dart';
 import 'package:coffee_project/view_model/login_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,6 +17,8 @@ class SettingPage extends StatelessWidget {
         _openAccountPage("アカウント", Icon(Icons.person), context),
         _tutorialPage('チュートリアル', Icon(Icons.book), context),
         _openAggregatePage('集計', Icon(Icons.list), context),
+        // デバッグ用。普段は隠す
+        // _openDebugPage('デバッグ', Icon(Icons.grass_outlined), context),
 
         // _settingListItem("通知", Icon(Icons.notifications), null),
       ]),
@@ -96,6 +99,22 @@ class SettingPage extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => AggregatePage(),
+            fullscreenDialog: true,
+          ),
+        );
+      },
+    );
+  }
+
+  // 開発者モード
+  Widget _openDebugPage(String title, Icon icon, BuildContext context) {
+    return GestureDetector(
+      child: _settingContainer(context, title, icon),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DebugPage(),
             fullscreenDialog: true,
           ),
         );
