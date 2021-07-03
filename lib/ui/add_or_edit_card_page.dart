@@ -339,13 +339,22 @@ class AddOrEditCardPage extends StatelessWidget {
                               children: [
                                 Icon(Icons.image_rounded),
                                 TextButton(
-                                  child: Text('カメラロール'),
+                                  child: Text('画像選択'),
                                   onPressed: () {
-                                    model.showImagePicker();
-                                    _imageFile = model.imageFile;
-                                    model.refresh();
+                                    _showModalBottomSheet(context, model);
+                                    // model.showImagePicker();
+                                    // _imageFile = model.imageFile;
+                                    // model.refresh();
                                   },
                                 ),
+                                // TextButton(
+                                //   child: Text('カメラ'),
+                                //   onPressed: () {
+                                //     model.showImageCamera();
+                                //     _imageFile = model.imageFile;
+                                //     model.refresh();
+                                //   },
+                                // ),
                                 Icon(Icons.photo_album),
                                 TextButton(
                                   child: Text('アルバム'),
@@ -371,7 +380,7 @@ class AddOrEditCardPage extends StatelessWidget {
                                 ),
                                 Icon(Icons.broken_image),
                                 TextButton(
-                                  child: Text('画像リセット'),
+                                  child: Text('リセット'),
                                   onPressed: () {
                                     model.imageFile = null;
                                     _userImageId = null;
@@ -478,6 +487,16 @@ class AddOrEditCardPage extends StatelessWidget {
     );
   }
 
+  // 画像選択のボトムモーダルを表示
+  void _showModalBottomSheet(BuildContext context, CardModel _model) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (context) {
+        return bottomSheat(context, _model);
+      },
+    );
+  }
+
   // 投稿成功ダイアログ
   Future _showSuccsessDialog(BuildContext context) async {
     var value = await showDialog(
@@ -530,4 +549,54 @@ class AddOrEditCardPage extends StatelessWidget {
     );
     return byteData;
   }
+}
+
+Widget bottomSheat(BuildContext context, CardModel _model) {
+  return SizedBox(
+    height: 300,
+    child: Column(
+      children: [
+        SizedBox(
+          height: 70,
+          child: Center(
+            child: Text(
+              '画像を追加する方法を選んでください',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        const Divider(thickness: 1),
+        Expanded(
+          child: Column(
+            children: [
+              TextButton(
+                child: Text('カメラ起動'),
+                onPressed: () {
+                  _model.showImageCamera();
+                  _model.imageFile;
+                  _model.refresh();
+                  Navigator.pop(context);
+                },
+              ),
+              TextButton(
+                child: Text('ギャラリー'),
+                onPressed: () {
+                  _model.showImagePicker();
+                  _model.imageFile;
+                  _model.refresh();
+                  Navigator.pop(context);
+                },
+              ),
+              TextButton(
+                child: Text('キャンセル'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }

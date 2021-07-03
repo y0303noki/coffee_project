@@ -413,6 +413,17 @@ class CardModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future showImageCamera() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    if (pickedFile == null) {
+      print('pickedfile is null');
+      return;
+    }
+    imageFile = File(pickedFile.path);
+    notifyListeners();
+  }
+
   // storageへアップロード
   Future<String> uploadImageUrl(CoffeeCard addCoffeeCard, String uuId) async {
     if (imageFile == null) {
