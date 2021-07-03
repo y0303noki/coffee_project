@@ -108,7 +108,10 @@ class AddOrEditCardPage extends StatelessWidget {
               children: [
                 Consumer<CardModel>(
                   builder: (context, model, child) {
-                    _userImageId = model.userImageId;
+                    if (!isEdit) {
+                      _userImageId = model.userImageId;
+                    }
+
                     // サジェストするための名前リストを取得
                     List<Coffee> limitMyCoffee = model.limitMyCoffee;
 
