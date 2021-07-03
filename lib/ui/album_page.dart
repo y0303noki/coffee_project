@@ -99,11 +99,17 @@ class AlbumPage extends StatelessWidget {
       );
     }
 
-    return GridView.count(
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      crossAxisCount: 2,
-      children: userImageWidget,
+    // アルバムをGridViewで表示
+    return Expanded(
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+        ),
+        itemCount: userImageWidget.length,
+        itemBuilder: (BuildContext context, int index) {
+          return userImageWidget[index];
+        },
+      ),
     );
   }
 
