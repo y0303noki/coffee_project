@@ -47,7 +47,7 @@ class AlbumDetailPage extends StatelessWidget {
                 ],
               ),
             ),
-            Center(
+            Expanded(
               child: Image.network(_imageUrl),
             ),
             Padding(
