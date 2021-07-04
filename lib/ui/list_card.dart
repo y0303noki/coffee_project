@@ -114,8 +114,8 @@ class ListCard extends StatelessWidget {
       // 追加画面
       if (_imageFile != null) {
         return Container(
-          width: 100,
-          height: 100,
+          // width: 100,
+          // height: 100,
           child: Image.file(_imageFile),
         );
       } else {
@@ -142,8 +142,8 @@ class ListCard extends StatelessWidget {
             if (!snapshot.hasData) {
               return Container(
                 color: Colors.grey,
-                width: 100,
-                height: 100,
+                // width: 100,
+                // height: 100,
               );
             }
           }
@@ -176,8 +176,8 @@ class ListCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10.0),
                   child: Image.network(
                     imageUrl,
-                    width: 100,
-                    height: 100,
+                    // width: 100,
+                    // height: 100,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -213,145 +213,6 @@ class ListCard extends StatelessWidget {
       format: ui.ImageByteFormat.png,
     );
     return byteData;
-  }
-
-  Widget cardWidget(String dateStr, BuildContext context, ListCard listCard) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.brown.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(10),
-        // 影
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            spreadRadius: 1.0,
-            blurRadius: 10.0,
-            offset: Offset(10, 10),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.white,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(10),
-          // splashColor: Colors.white,
-          // onTap: () => print('tap!'),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start, // 上寄せ
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    bottomLeft: Radius.circular(10),
-                    topRight: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
-                  ),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          bottomLeft: Radius.circular(10),
-                          topRight: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
-                        ),
-                        color: Colors.white10),
-                    child: switchImage(),
-                  ),
-                ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    '$dateStr',
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyText1.color,
-                    ),
-                  ),
-                  Text(
-                    // '$_name',
-                    'aaa',
-                    style: TextStyle(
-                      fontSize: _nameFontSize,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.bodyText1.color,
-                    ),
-                  ),
-                  Text(
-                    '$_shopOrBrandName',
-                    style: TextStyle(
-                      fontSize: _shopOrBrandFontSize,
-                      fontWeight: FontWeight.normal,
-                      color: Theme.of(context).textTheme.bodyText1.color,
-                    ),
-                  ),
-                  RatingBarIndicator(
-                    rating: _score.toDouble(),
-                    itemBuilder: (context, index) => Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                    ),
-                    itemCount: 5,
-                    itemSize: 20.0,
-                    direction: Axis.horizontal,
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: _isAddOrUpdateCard
-                            ? null
-                            : () async {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        AddOrEditCardPage(listCard),
-                                    fullscreenDialog: true,
-                                  ),
-                                ).then((value) {
-                                  if (value is SnackBar) {
-                                    // 保存が完了したら画面下部に完了メッセージを出す
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(value);
-                                  }
-                                });
-                              },
-                        color: Theme.of(context).textTheme.bodyText1.color,
-                        icon: Icon(Icons.edit_outlined),
-                      ),
-                      // SNSで共有ボタン
-                      IconButton(
-                        onPressed: _isAddOrUpdateCard
-                            ? null
-                            : () async {
-                                final bytes = await exportToImage(_globalKey);
-                                final nowUnixTime =
-                                    DateTime.now().millisecondsSinceEpoch;
-
-                                await Share.file(
-                                    'coffee Image',
-                                    'CoffeeProject$nowUnixTime.png',
-                                    bytes.buffer.asUint8List(),
-                                    'image/png',
-                                    text: '今日の1杯を投稿しました！ #CoffeeProject');
-                              },
-                        color: Theme.of(context).textTheme.bodyText1.color,
-                        icon: Icon(Icons.share_outlined),
-                      ),
-                    ],
-                  ),
-                  // 編集ボタン
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   Widget _ticketWidget(String dateStr, BuildContext context, ListCard listCard,
