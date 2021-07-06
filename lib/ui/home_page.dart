@@ -43,7 +43,7 @@ class HomePage extends StatelessWidget {
         },
         child: Container(
           width: 50,
-          child: Image.asset('asset/images/coffeePlusToukaIcon.png'),
+          child: Image.asset('asset/images/coffeeplus.png'),
         ),
         backgroundColor: Colors.brown[100],
       ),
@@ -113,7 +113,13 @@ class HomePage extends StatelessWidget {
                   },
                   child: Container(
                     width: 50,
-                    child: Image.asset('asset/images/coffeePlusToukaIcon.png'),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image:
+                                AssetImage("asset/images/coffeetoumei.png"))),
+                    // child: Image.asset('asset/images/coffeeplus.png'),
                   ),
                   backgroundColor: Colors.brown[100],
                 )
