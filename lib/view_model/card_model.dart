@@ -357,13 +357,18 @@ class CardModel extends ChangeNotifier {
     }
   }
 
+  // お気に入り状態の更新
   Future<String> updateFavorite(CoffeeCard updateCard) async {
     // おすすめのバリテーション
     if (updateCard.favorite == null) {
       return validation_error;
     }
-    // ドキュメント更新
-    Map<String, dynamic> updateData = await _setUpdateCard(updateCard);
+
+    Map<String, dynamic> updateData = {};
+    if (updateCard.favorite != null) {
+      updateData['favorite'] = updateCard.favorite;
+    }
+
     final String docId = updateCard.id;
     if (docId == null) {
       return null;
