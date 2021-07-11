@@ -6,6 +6,7 @@ class Coffee {
     id = doc['id'];
     name = doc['name'];
     score = doc['score'];
+    favorite = doc.data()['favorite'] ?? 0;
     coffeeAt = doc['coffeeAt'].toDate();
     createdAt = doc['createdAt'].toDate();
     updatedAt = doc['updatedAt'].toDate();
@@ -17,6 +18,7 @@ class Coffee {
   String id;
   String name;
   int score;
+  int favorite;
   DateTime coffeeAt;
   DateTime createdAt;
   DateTime updatedAt;

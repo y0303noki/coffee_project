@@ -29,6 +29,9 @@ class CardModel extends ChangeNotifier {
   String userImageId;
   // String get userImageId => _userImageId;
 
+  // お気に入り
+  int favorite = 0;
+
   List<Coffee> _thisMonthCoffee = [];
   List<Coffee> get thisMonthCoffee => _thisMonthCoffee;
 
@@ -293,6 +296,10 @@ class CardModel extends ChangeNotifier {
       result['score'] = updateCard.score;
     }
 
+    if (updateCard.favorite != null) {
+      result['favorite'] = updateCard.favorite;
+    }
+
     if (imageFile != null) {
       // user_imagesのidとstorageのid
       final String uuId = Uuid().v4();
@@ -343,6 +350,30 @@ class CardModel extends ChangeNotifier {
           .doc(docId)
           .update(updateData);
       // isLoading = false;
+      return 'ok';
+    } catch (e) {
+      isLoading = false;
+      return 'error';
+    }
+  }
+
+  Future<String> updateFavorite(CoffeeCard updateCard) async {
+    // おすすめのバリテーション
+    if (updateCard.favorite == null) {
+      return validation_error;
+    }
+    // ドキュメント更新
+    Map<String, dynamic> updateData = await _setUpdateCard(updateCard);
+    final String docId = updateCard.id;
+    if (docId == null) {
+      return null;
+    }
+
+    try {
+      final result = await FirebaseFirestore.instance
+          .collection('coffee_cards')
+          .doc(docId)
+          .update(updateData);
       return 'ok';
     } catch (e) {
       isLoading = false;

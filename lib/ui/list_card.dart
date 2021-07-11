@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:coffee_project/model/coffee_card.dart';
 import 'package:coffee_project/model/userImage.dart';
 import 'package:coffee_project/ui/add_or_edit_card_page.dart';
 import 'package:coffee_project/ui/album_detail_page.dart';
@@ -24,6 +25,7 @@ class ListCard extends StatelessWidget {
   final String _shopOrBrandName;
   final bool _isPublic;
   final int _score;
+  final int _favorite;
   // 端末内の画像のアドレス
   final File _imageFile;
   String _userImageId;
@@ -38,6 +40,7 @@ class ListCard extends StatelessWidget {
   String get shopOrBrandName => _shopOrBrandName;
   bool get isPublic => _isPublic;
   int get score => _score;
+  int get favorite => _favorite;
   String get userImageId => _userImageId;
 
   GlobalKey _globalKey = GlobalKey();
@@ -54,6 +57,7 @@ class ListCard extends StatelessWidget {
       this._shopOrBrandName,
       this._isPublic,
       this._score,
+      this._favorite,
       this._imageFile,
       this._userImageId,
       this._isAddOrUpdateCard,
@@ -66,11 +70,11 @@ class ListCard extends StatelessWidget {
       this.tempName = '$sub…';
     }
 
-    _shopOrBrandFontSize = 18;
-    if (this._shopOrBrandName.length < 14) {
+    _shopOrBrandFontSize = 12;
+    if (this._shopOrBrandName.length < 15) {
       this.tempShopOrBrandName = this.shopOrBrandName;
-    } else if (this._shopOrBrandName.length >= 14) {
-      String sub = this._shopOrBrandName.substring(0, 13);
+    } else if (this._shopOrBrandName.length >= 15) {
+      String sub = this._shopOrBrandName.substring(0, 14);
       this.tempShopOrBrandName = '$sub…';
     }
   }
@@ -84,6 +88,7 @@ class ListCard extends StatelessWidget {
         _shopOrBrandName,
         _isPublic,
         _score,
+        _favorite,
         _imageFile,
         _userImageId,
         _isAddOrUpdateCard,
@@ -247,7 +252,7 @@ class ListCard extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -261,33 +266,37 @@ class ListCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 4),
-                  Text(
-                    tempName,
-                    style: TextStyle(
-                      fontSize: _nameFontSize,
-                      // fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.bodyText1.color,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    tempShopOrBrandName,
-                    style: TextStyle(
-                      fontSize: _shopOrBrandFontSize,
-                      color: Theme.of(context).textTheme.bodyText1.color,
+                  Center(
+                    child: Text(
+                      tempName,
+                      style: TextStyle(
+                        fontSize: _nameFontSize,
+                        // fontWeight: FontWeight.bold,
+                        color: Theme.of(context).textTheme.bodyText1.color,
+                      ),
                     ),
                   ),
                   SizedBox(height: 2),
-                  RatingBarIndicator(
-                    rating: _score.toDouble(),
-                    itemBuilder: (context, index) => Icon(
-                      Icons.star,
-                      color: Colors.amber,
+                  Center(
+                    child: Text(
+                      tempShopOrBrandName,
+                      style: TextStyle(
+                        fontSize: _shopOrBrandFontSize,
+                        color: Theme.of(context).textTheme.bodyText1.color,
+                      ),
                     ),
-                    itemCount: 5,
-                    itemSize: 20.0,
-                    direction: Axis.horizontal,
                   ),
+                  // SizedBox(height: 2),
+                  // RatingBarIndicator(
+                  //   rating: _score.toDouble(),
+                  //   itemBuilder: (context, index) => Icon(
+                  //     Icons.star,
+                  //     color: Colors.amber,
+                  //   ),
+                  //   itemCount: 5,
+                  //   itemSize: 20.0,
+                  //   direction: Axis.horizontal,
+                  // ),
                   Row(
                     children: [
                       IconButton(
@@ -333,6 +342,39 @@ class ListCard extends StatelessWidget {
                               },
                         color: Theme.of(context).textTheme.bodyText1.color,
                         icon: Icon(Icons.share_outlined),
+                      ),
+                      // お気に入りボタン
+                      IconButton(
+                        onPressed: _isAddOrUpdateCard
+                            ? null
+                            : () async {
+                                // お気に入り状態を変更する
+                                int after = _favorite == 0 ? 1 : 0;
+                                CoffeeCard updateCard =
+                                    new CoffeeCard(id: _id, favorite: after);
+                                final String updateCardResult =
+                                    await model.updateFavorite(updateCard);
+
+                                // お気に入りのスナックバー
+                                String snackBarText = after == 0
+                                    ? 'お気に入りから削除しました。'
+                                    : 'お気に入りに追加しました。';
+                                final SnackBar snackBar = SnackBar(
+                                  content: Text(snackBarText),
+                                  duration: const Duration(seconds: 1),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                );
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                                model.findCardListHome();
+                                model.refresh();
+                              },
+                        color: Theme.of(context).textTheme.bodyText1.color,
+                        icon: _favorite == 0
+                            ? Icon(Icons.favorite_outline)
+                            : Icon(Icons.favorite, color: Colors.red),
                       ),
                     ],
                   ),

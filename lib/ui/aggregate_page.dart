@@ -129,7 +129,7 @@ class AggregatePage extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '(1杯${perLittleCount}L計算)',
+                  '(1杯${perLittleCount}L)',
                   style: TextStyle(
                     color: Theme.of(context).textTheme.bodyText1.color,
                     fontSize: 20,

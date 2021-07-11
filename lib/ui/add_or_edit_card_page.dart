@@ -40,6 +40,8 @@ class AddOrEditCardPage extends StatelessWidget {
   bool _isPublic = false;
   // スコア
   int _score = 3;
+  // お気に入り
+  int _favorite = 0;
   // 画像
   String _imageUrl = null;
   File _imageFile = null;
@@ -145,6 +147,7 @@ class AddOrEditCardPage extends StatelessWidget {
                         _shopOrBrandName,
                         _isPublic,
                         _score,
+                        _favorite,
                         _imageFile,
                         _userImageId,
                         true,
@@ -276,45 +279,6 @@ class AddOrEditCardPage extends StatelessWidget {
                                           suggestion;
                                       model.refresh();
                                     },
-                                  ),
-
-                                  // スコア
-                                  Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.fromLTRB(
-                                                0, 10, 0, 0),
-                                            child: Text(
-                                              'おすすめ',
-                                              style: TextStyle(
-                                                fontSize: 15,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      RatingBar.builder(
-                                        initialRating: _score.toDouble(),
-                                        minRating: 1,
-                                        itemSize: 30,
-                                        direction: Axis.horizontal,
-                                        allowHalfRating: false,
-                                        itemCount: 5,
-                                        itemPadding: EdgeInsets.symmetric(
-                                            horizontal: 4.0),
-                                        itemBuilder: (context, _) => Icon(
-                                          Icons.star,
-                                          color: Colors.amber,
-                                        ),
-                                        onRatingUpdate: (rating) {
-                                          _score = rating.toInt();
-                                          model.refresh();
-                                        },
-                                      ),
-                                    ],
                                   ),
 
                                   // 公開設定、まだ使わない
