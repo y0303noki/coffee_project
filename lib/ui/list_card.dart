@@ -63,20 +63,20 @@ class ListCard extends StatelessWidget {
       this._isAddOrUpdateCard,
       this._model) {
     _nameFontSize = 22;
-    if (this._name.length < 12) {
-      this.tempName = this._name;
-    } else if (this._name.length >= 12) {
-      String sub = this._name.substring(0, 11);
-      this.tempName = '$sub…';
-    }
+    // if (this._name.length < 12) {
+    //   this.tempName = this._name;
+    // } else if (this._name.length >= 12) {
+    //   String sub = this._name.substring(0, 11);
+    //   this.tempName = '$sub…';
+    // }
 
-    _shopOrBrandFontSize = 12;
-    if (this._shopOrBrandName.length < 15) {
-      this.tempShopOrBrandName = this.shopOrBrandName;
-    } else if (this._shopOrBrandName.length >= 15) {
-      String sub = this._shopOrBrandName.substring(0, 14);
-      this.tempShopOrBrandName = '$sub…';
-    }
+    _shopOrBrandFontSize = 18;
+    // if (this._shopOrBrandName.length < 15) {
+    //   this.tempShopOrBrandName = this.shopOrBrandName;
+    // } else if (this._shopOrBrandName.length >= 15) {
+    //   String sub = this._shopOrBrandName.substring(0, 14);
+    //   this.tempShopOrBrandName = '$sub…';
+    // }
   }
 
   @override
@@ -268,10 +268,11 @@ class ListCard extends StatelessWidget {
                   SizedBox(height: 4),
                   Center(
                     child: Text(
-                      tempName,
+                      _name,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: _nameFontSize,
-                        // fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                         color: Theme.of(context).textTheme.bodyText1.color,
                       ),
                     ),
@@ -279,10 +280,11 @@ class ListCard extends StatelessWidget {
                   SizedBox(height: 2),
                   Center(
                     child: Text(
-                      tempShopOrBrandName,
+                      _shopOrBrandName,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: _shopOrBrandFontSize,
-                        color: Theme.of(context).textTheme.bodyText1.color,
+                        color: Colors.grey,
                       ),
                     ),
                   ),
