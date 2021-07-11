@@ -16,7 +16,7 @@ class SettingPage extends StatelessWidget {
       body: ListView(children: [
         _openAccountPage("アカウント", Icon(Icons.person), context),
         _tutorialPage('チュートリアル', Icon(Icons.book), context),
-        _openAggregatePage('集計', Icon(Icons.list), context),
+        _openAggregatePage('記録', Icon(Icons.note_outlined), context),
         // デバッグ用。普段は隠す
         // _openDebugPage('デバッグ', Icon(Icons.grass_outlined), context),
 

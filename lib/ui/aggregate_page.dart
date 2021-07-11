@@ -11,6 +11,12 @@ import 'package:provider/provider.dart';
 class AggregatePage extends StatelessWidget {
   int _thisMonthCount = 0;
 
+  // 1杯当たり何Lで計算するか
+  final double perLittleCount = 0.25;
+
+  // 1日当たりに何杯飲んでいるか
+  double per1dayCount = 0;
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<CardModel>(
@@ -22,6 +28,7 @@ class AggregatePage extends StatelessWidget {
 
           if (thisMonthCount.isNotEmpty) {
             _thisMonthCount = thisMonthCount.length;
+            _howmanyCount1day();
           }
 
           // var test = model.findMyAllCoffee();
@@ -32,7 +39,7 @@ class AggregatePage extends StatelessWidget {
             appBar: AppBar(
               backgroundColor: Theme.of(context).canvasColor,
               title: Text(
-                '集計',
+                '記録',
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),
@@ -49,7 +56,7 @@ class AggregatePage extends StatelessWidget {
       children: [
         Container(
           width: double.infinity,
-          height: 180,
+          // height: 180,
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey),
             borderRadius: BorderRadius.circular(10),
@@ -93,11 +100,58 @@ class AggregatePage extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(height: 4),
+                Text('1日当たり${_howmanyCount1day()}杯飲んでいます。'),
+                SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Text(
+                          (_thisMonthCount * perLittleCount).toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).textTheme.bodyText1.color,
+                            fontSize: 80,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        'L',
+                        style: TextStyle(
+                          color: Theme.of(context).textTheme.bodyText1.color,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  '(1杯${perLittleCount}L計算)',
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyText1.color,
+                    fontSize: 20,
+                  ),
+                ),
               ],
             ),
           ),
         ),
       ],
     );
+  }
+
+  // 1日当たりに何杯飲んでいるか計算
+  double _howmanyCount1day() {
+    // 四捨五入を少数第一位でするために利用
+    final _baseNumber = 10;
+    DateTime now = DateTime.now();
+
+    double result = _thisMonthCount / now.day;
+    result = ((result * _baseNumber).round() / _baseNumber);
+
+    return result;
   }
 }
