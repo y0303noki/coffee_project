@@ -88,6 +88,7 @@ class ListCardPage extends StatelessWidget {
             coffee.shopOrBrandName,
             coffee.isPublic,
             coffee.score,
+            coffee.favorite,
             null,
             userImageId,
             false,
